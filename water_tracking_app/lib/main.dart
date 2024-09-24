@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:water_tracking_app/add_weter.dart';
+import 'package:water_tracking_app/cups_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -9,17 +11,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const String appTitle = 'Flutter layout demo';
-    return MaterialApp(
-      title: appTitle,
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text(appTitle),
-        ),
-        body: const Center(
-          child: Text('Hello Worldddddddddd'),
-        ),
-      ),
+     return  MaterialApp(
+      initialRoute: CupsPage.nameRoute,
+      routes: {
+        CupsPage.nameRoute: (context) => CupsPage(),
+        AddWeter.nameRoute: (context) => AddWeter(),
+      },
     );
   }
 }
