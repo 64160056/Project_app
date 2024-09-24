@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-     return  MaterialApp(
+    return MaterialApp(
       initialRoute: CupsPage.nameRoute,
       routes: {
         CupsPage.nameRoute: (context) => CupsPage(),
