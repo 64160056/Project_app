@@ -55,7 +55,7 @@ class _CupsPageState extends State<CupsPage> {
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.pushNamed(context, '/drink'); // เส้นทางอื่นๆ
+              Navigator.pushNamed(context, '/water_track'); // เส้นทางอื่นๆ
             },
             child: const Text('ไปที่ Drink'),
           ),
