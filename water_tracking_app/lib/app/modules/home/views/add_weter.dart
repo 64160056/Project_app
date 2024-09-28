@@ -7,18 +7,21 @@ class AddWeter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-       home: Scaffold(
+      home: Scaffold(
         appBar: AppBar(
-          title: Text('ปริมาณการดื่ม',style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),),
+          title: Text(
+            'ปริมาณการดื่ม',
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          ),
           backgroundColor: Colors.lightBlue[100],
           centerTitle: true,
         ),
         body: WaterVolumeScreen(),
-        
       ),
     );
   }
 }
+
 class WaterVolumeScreen extends StatefulWidget {
   @override
   _WaterVolumeScreenState createState() => _WaterVolumeScreenState();
@@ -34,8 +37,7 @@ class _WaterVolumeScreenState extends State<WaterVolumeScreen> {
     {'label': 'กำหนดเอง', 'image': 'assets/water_bottle.png'},
   ];
 
-   int selectedAmount = 0; // ปริมาณน้ำที่ถูกเลือก
-
+  int selectedAmount = 0; // ปริมาณน้ำที่ถูกเลือก
 
   @override
   Widget build(BuildContext context) {
@@ -43,15 +45,13 @@ class _WaterVolumeScreenState extends State<WaterVolumeScreen> {
       children: [
         Container(
           padding: EdgeInsets.all(16.0),
-          
-          
         ),
         Expanded(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: GridView.builder(
               shrinkWrap: true, // ทำให้ GridView ขยายเท่าที่จำเป็น
-              physics: NeverScrollableScrollPhysics(), 
+              physics: NeverScrollableScrollPhysics(),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3, // จำนวนปุ่มในแต่ละแถว
                 crossAxisSpacing: 15.0,
@@ -64,8 +64,10 @@ class _WaterVolumeScreenState extends State<WaterVolumeScreen> {
                     if (volumes[index]['label'] == 'กำหนดเอง') {
                       showCustomAmountDialog(context);
                     } else {
-                      Get.to(() => WaterTrack());
-                      Navigator.pop(context, volumes[index]['amount']);
+                      int selectedAmount =
+                          int.parse(volumes[index]['label'].split(' ')[0]);
+                      Get.back(
+                          result: selectedAmount); // ส่งค่ากลับไปที่ WaterTrack
                     }
                   },
                   child: Column(
@@ -117,9 +119,10 @@ class _WaterVolumeScreenState extends State<WaterVolumeScreen> {
     );
   }
 }
+
 void showCustomAmountDialog(BuildContext context) {
   final TextEditingController _controller = TextEditingController();
-  
+
   showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -131,7 +134,8 @@ void showCustomAmountDialog(BuildContext context) {
           height: 250,
           decoration: BoxDecoration(
             image: DecorationImage(
-              image: AssetImage('assets/wavedialog.png'), // ใส่ path ของรูปพื้นหลังที่ต้องการ
+              image: AssetImage(
+                  'assets/wavedialog.png'), // ใส่ path ของรูปพื้นหลังที่ต้องการ
               fit: BoxFit.cover, // ให้รูปเต็มพื้นที่
             ),
             borderRadius: BorderRadius.circular(20), // ขอบมนของ container
@@ -146,7 +150,8 @@ void showCustomAmountDialog(BuildContext context) {
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: const Color.fromARGB(255, 13, 13, 13), // เปลี่ยนสีเพื่อให้เด่นบนพื้นหลัง
+                    color: const Color.fromARGB(
+                        255, 13, 13, 13), // เปลี่ยนสีเพื่อให้เด่นบนพื้นหลัง
                   ),
                 ),
                 SizedBox(height: 20),
@@ -160,18 +165,25 @@ void showCustomAmountDialog(BuildContext context) {
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
                           hintText: 'Enter amount',
-                          hintStyle: TextStyle(color: const Color.fromARGB(255, 127, 127, 127)), // เปลี่ยนสี hint ให้เข้ากับพื้นหลัง
+                          hintStyle: TextStyle(
+                              color: const Color.fromARGB(255, 127, 127,
+                                  127)), // เปลี่ยนสี hint ให้เข้ากับพื้นหลัง
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
                         ),
-                        style: TextStyle(color: const Color.fromARGB(255, 7, 7, 7)), // เปลี่ยนสีข้อความที่พิมพ์
+                        style: TextStyle(
+                            color: const Color.fromARGB(
+                                255, 7, 7, 7)), // เปลี่ยนสีข้อความที่พิมพ์
                       ),
                     ),
                     SizedBox(width: 10),
                     Text(
                       'ml.',
-                      style: TextStyle(fontSize: 16, color: const Color.fromARGB(255, 0, 0, 0)), // เปลี่ยนสีให้เข้ากับพื้นหลัง
+                      style: TextStyle(
+                          fontSize: 16,
+                          color: const Color.fromARGB(
+                              255, 0, 0, 0)), // เปลี่ยนสีให้เข้ากับพื้นหลัง
                     ),
                   ],
                 ),

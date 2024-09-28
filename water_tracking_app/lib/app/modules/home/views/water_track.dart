@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_rx/get_rx.dart';
+import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:get/route_manager.dart';
 import 'package:water_tracking_app/app/modules/home/views/add_weter.dart';
 
 class WaterTrack extends StatelessWidget {
   static const String nameRoute = '/water_track';
+  final RxInt waterAmount = 0.obs; // ตัวแปรเก็บปริมาณน้ำที่ดื่ม (ใช้ GetX)
 
   @override
   Widget build(BuildContext context) {
@@ -32,14 +35,14 @@ class WaterTrack extends StatelessWidget {
             CircleAvatar(
               radius: 120,
               backgroundColor: Color.fromARGB(255, 15, 130, 245),
-              child: Text(
-                '100%',
+              child: Obx(() => Text(
+                '${(waterAmount.value / 2500 * 100).toInt()}%', // คำนวณเป็น %
                 style: TextStyle(
                   fontSize: 40,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                 ),
-              ),
+              )),
             ),
             SizedBox(
               height: 30,
@@ -72,8 +75,12 @@ class WaterTrack extends StatelessWidget {
                     ),
                   ),
                   FloatingActionButton(
-                    onPressed: () {
-                       Get.to(() => AddWeter());
+                    onPressed: () async {
+                      // รอค่าจาก AddWeter แล้วอัปเดต waterAmount
+                      final int? addedAmount = await Get.to(() => AddWeter());
+                      if (addedAmount != null) {
+                        waterAmount.value += addedAmount; // เพิ่มค่าน้ำที่ดื่ม
+                      }
                     },
                     backgroundColor: const Color.fromARGB(255, 149, 219, 173),
                     child: Icon(
