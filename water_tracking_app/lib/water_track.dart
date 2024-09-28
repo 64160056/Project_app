@@ -14,7 +14,7 @@ class WaterTrack extends StatelessWidget {
             child: Text(
           'เป้าหมายการดื่มน้ำของคุณ',
           style:
-              TextStyle(fontSize: 32, color: Color.fromARGB(255, 0, 94, 188)),
+              TextStyle(fontSize: 25, color: Color.fromARGB(255, 0, 94, 188)),
         )),
       ),
       body: Center(
@@ -58,7 +58,9 @@ class WaterTrack extends StatelessWidget {
                   onPressed: () {
                     Navigator.pushNamed(context, AddWeter.nameRoute);
                   },
-                  child: Icon(Icons.add),
+                  
+                  
+                  child: Icon(Icons.add,color: Color.fromARGB(255, 22, 27, 19), ),
                 ),
               ],
             ),
