@@ -40,10 +40,12 @@ class WaterVolumeScreen extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: GridView.builder(
+              shrinkWrap: true, // ทำให้ GridView ขยายเท่าที่จำเป็น
+              physics: NeverScrollableScrollPhysics(), 
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3, // จำนวนปุ่มในแต่ละแถว
-                crossAxisSpacing: 16.0,
-                mainAxisSpacing: 16.0,
+                crossAxisSpacing: 15.0,
+                mainAxisSpacing: 15.0,
               ),
               itemCount: volumes.length,
               itemBuilder: (context, index) {
@@ -63,7 +65,7 @@ class WaterVolumeScreen extends StatelessWidget {
                               color: Colors.grey.withOpacity(0.5), // สีของเงา
                               spreadRadius: 2, // ระยะกระจายของเงา
                               blurRadius: 5, // ระยะเบลอของเงา
-                              offset: Offset(0, 5), // การเลื่อนของเงา (x, y)
+                              offset: Offset(0, 3), // การเลื่อนของเงา (x, y)
                             ),
                           ],
                         ),
@@ -75,7 +77,7 @@ class WaterVolumeScreen extends StatelessWidget {
                       SizedBox(height: 8),
                       Text(
                         volumes[index]['label'],
-                        style: TextStyle(fontSize: 16),
+                        style: TextStyle(fontSize: 15),
                       ),
                     ],
                   ),
