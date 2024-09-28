@@ -20,9 +20,9 @@ class HomeView extends GetView<HomeController> {
           style: TextStyle(fontSize: 20),
         ),
       ),
-      floatingActionButton: FloatingActionButton(onPressed: () {
-        Get.to(() => InfoView());
-      }),
+      // floatingActionButton: FloatingActionButton(onPressed: () {
+      //   Get.to(() => InfoView());
+      // }),
     );
   }
 }
