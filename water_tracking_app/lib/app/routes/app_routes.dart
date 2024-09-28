@@ -10,4 +10,7 @@ abstract class _Paths {
   _Paths._();
   static const HOME = '/home';
   static const INFO = '/info';
+  static const WaterTrack = '/water_track';
+  static const AddWeter = '/add_water';
+
 }

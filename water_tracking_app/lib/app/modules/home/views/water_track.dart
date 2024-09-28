@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/route_manager.dart';
 import 'package:water_tracking_app/app/modules/home/views/add_weter.dart';
 
 class WaterTrack extends StatelessWidget {
@@ -72,7 +73,7 @@ class WaterTrack extends StatelessWidget {
                   ),
                   FloatingActionButton(
                     onPressed: () {
-                      Navigator.pushNamed(context, AddWeter.nameRoute);
+                       Get.to(() => AddWeter());
                     },
                     backgroundColor: const Color.fromARGB(255, 149, 219, 173),
                     child: Icon(
