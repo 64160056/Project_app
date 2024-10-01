@@ -134,11 +134,10 @@ void showCustomAmountDialog(BuildContext context) {
           height: 250,
           decoration: BoxDecoration(
             image: DecorationImage(
-              image: AssetImage(
-                  'assets/wavedialog.png'), // ใส่ path ของรูปพื้นหลังที่ต้องการ
-              fit: BoxFit.cover, // ให้รูปเต็มพื้นที่
+              image: AssetImage('assets/wavedialog.png'),
+              fit: BoxFit.cover,
             ),
-            borderRadius: BorderRadius.circular(20), // ขอบมนของ container
+            borderRadius: BorderRadius.circular(20),
           ),
           child: Padding(
             padding: EdgeInsets.all(20),
@@ -150,8 +149,7 @@ void showCustomAmountDialog(BuildContext context) {
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: const Color.fromARGB(
-                        255, 13, 13, 13), // เปลี่ยนสีเพื่อให้เด่นบนพื้นหลัง
+                    color: const Color.fromARGB(255, 13, 13, 13),
                   ),
                 ),
                 SizedBox(height: 20),
@@ -166,15 +164,13 @@ void showCustomAmountDialog(BuildContext context) {
                         decoration: InputDecoration(
                           hintText: 'Enter amount',
                           hintStyle: TextStyle(
-                              color: const Color.fromARGB(255, 127, 127,
-                                  127)), // เปลี่ยนสี hint ให้เข้ากับพื้นหลัง
+                              color: const Color.fromARGB(255, 127, 127, 127)),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
                         ),
                         style: TextStyle(
-                            color: const Color.fromARGB(
-                                255, 7, 7, 7)), // เปลี่ยนสีข้อความที่พิมพ์
+                            color: const Color.fromARGB(255, 7, 7, 7)),
                       ),
                     ),
                     SizedBox(width: 10),
@@ -182,17 +178,17 @@ void showCustomAmountDialog(BuildContext context) {
                       'ml.',
                       style: TextStyle(
                           fontSize: 16,
-                          color: const Color.fromARGB(
-                              255, 0, 0, 0)), // เปลี่ยนสีให้เข้ากับพื้นหลัง
+                          color: const Color.fromARGB(255, 0, 0, 0)),
                     ),
                   ],
                 ),
                 SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
-                    print('Added ${_controller.text} ml');
-                    Navigator.of(context).pop(); // ปิด dialog
-                    Get.to(() => WaterTrack());
+                    final amount = int.tryParse(_controller.text) ?? 0; // แปลงข้อความเป็นจำนวน
+                    Navigator.of(context).pop(amount); // ส่งค่ากลับ
+                     Get.back(
+                          result: amount);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color.fromARGB(255, 136, 195, 130),
@@ -217,3 +213,4 @@ void showCustomAmountDialog(BuildContext context) {
     },
   );
 }
+
