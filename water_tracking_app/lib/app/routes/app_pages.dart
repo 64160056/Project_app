@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:water_tracking_app/app/modules/home/views/add_weter.dart';
 import 'package:water_tracking_app/app/modules/home/views/info_view.dart';
+import 'package:water_tracking_app/app/modules/home/views/profile_view.dart';
 
 
 import '../modules/home/bindings/home_binding.dart';
@@ -33,6 +34,11 @@ class AppPages {
     GetPage(
       name: _Paths.AddWeter,
       page: () => AddWeter(),
+      binding: HomeBinding(),
+    ),
+        GetPage(
+      name: _Paths.PROFILE,
+      page: () => ProfileView(),
       binding: HomeBinding(),
     ),
   ];
