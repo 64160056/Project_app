@@ -1,12 +1,39 @@
 import 'package:flutter/material.dart';
-import 'package:get/get_rx/get_rx.dart';
-import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
-import 'package:get/route_manager.dart';
+import 'package:get/get.dart';
+import 'package:water_tracking_app/app/modules/home/controllers/water_controller.dart';
+import 'dart:math' as math;
+
 import 'package:water_tracking_app/app/modules/home/views/add_weter.dart';
 
-class WaterTrack extends StatelessWidget {
+class WaterTrack extends StatefulWidget {
   static const String nameRoute = '/water_track';
-  final RxInt waterAmount = 0.obs; // ตัวแปรเก็บปริมาณน้ำที่ดื่ม (ใช้ GetX)
+
+  @override
+  _WaterTrackState createState() => _WaterTrackState();
+}
+
+class _WaterTrackState extends State<WaterTrack>
+    with SingleTickerProviderStateMixin {
+  final RxInt waterAmount = 0.obs;
+  final double maxWaterLevel = 2500.0;
+  late AnimationController _controller;
+  final WaterController waterController = Get.put(WaterController());
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 2),
+    )..repeat(); // Repeat the animation to simulate the water flow
+  }
+
+  @override
+  void dispose() {
+    _controller
+        .dispose(); // Ensure the controller is disposed to prevent memory leaks
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +51,7 @@ class WaterTrack extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              '2500 ml',
+              '${maxWaterLevel.toInt()} ml',
               style: TextStyle(
                 fontSize: 40,
                 color: Color.fromARGB(255, 0, 94, 188),
@@ -32,24 +59,53 @@ class WaterTrack extends StatelessWidget {
               ),
             ),
             SizedBox(height: 20),
-            CircleAvatar(
-              radius: 120,
-              backgroundColor: Color.fromARGB(255, 15, 130, 245),
-              child: Obx(() => Text(
-                '${(waterAmount.value / 2500 * 100).toInt()}%', // คำนวณเป็น %
-                style: TextStyle(
-                  fontSize: 40,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              )),
-            ),
-            SizedBox(
-              height: 30,
-            ),
+            Obx(() => Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Container(
+                      width: 200,
+                      height: 400,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(100),
+                        border: Border.all(color: Colors.blue, width: 5),
+                      ),
+                    ),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(100), // ทำให้เป็นวงรี
+                      child: ClipPath(
+                        clipper: WaterClipper(
+                            progress: waterController.waterAmount.value / maxWaterLevel),
+                        child: AnimatedBuilder(
+                          animation: _controller,
+                          builder: (context, child) {
+                            return CustomPaint(
+                              painter: WaterPainter(_controller.value),
+                              child: Container(
+                                width: 200,
+                                height: 400,
+                                color: Colors.blueAccent,
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      top: 420 - (400 * (waterController.waterAmount.value / maxWaterLevel)),
+                      child: Text(
+                        '${(waterController.waterAmount.value / maxWaterLevel * 100).toInt()}%',
+                        style: TextStyle(
+                          fontSize: 40,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ],
+                )),
+            SizedBox(height: 30),
             Padding(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: 25.0), // เว้นระยะห่างจากขอบซ้ายและขวา
+              padding: const EdgeInsets.symmetric(horizontal: 25.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -58,13 +114,11 @@ class WaterTrack extends StatelessWidget {
                       // Handle button click
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor:
-                          Color.fromARGB(255, 236, 255, 165), // พื้นหลังปุ่ม
+                      backgroundColor: Color.fromARGB(255, 236, 255, 165),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      minimumSize:
-                          Size(150, 60), // กำหนดขนาดปุ่ม (width, height)
+                      minimumSize: Size(150, 60),
                     ),
                     child: Text(
                       'เป้าหมายใหม่',
@@ -76,10 +130,10 @@ class WaterTrack extends StatelessWidget {
                   ),
                   FloatingActionButton(
                     onPressed: () async {
-                      // รอค่าจาก AddWeter แล้วอัปเดต waterAmount
+                      // Update water amount
                       final int? addedAmount = await Get.to(() => AddWeter());
                       if (addedAmount != null) {
-                        waterAmount.value += addedAmount; // เพิ่มค่าน้ำที่ดื่ม
+                        waterController.addWater(addedAmount);
                       }
                     },
                     backgroundColor: const Color.fromARGB(255, 149, 219, 173),
@@ -88,8 +142,7 @@ class WaterTrack extends StatelessWidget {
                       size: 30,
                     ),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(
-                          50), // ให้แน่ใจว่ามีขอบโค้งเป็นวงกลม
+                      borderRadius: BorderRadius.circular(50),
                     ),
                   ),
                 ],
@@ -124,5 +177,62 @@ class WaterTrack extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class WaterPainter extends CustomPainter {
+  final double animationValue;
+  WaterPainter(this.animationValue);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()..color = Colors.blueAccent;
+    final path = Path();
+
+    final double waveHeight = 20;
+    final double waveFrequency = 1.5 * math.pi;
+
+    for (double x = 0; x <= size.width; x++) {
+      final double y = waveHeight *
+          math.sin(
+              (x / size.width * waveFrequency) + animationValue * 2 * math.pi);
+      if (x == 0) {
+        path.moveTo(x, size.height / 2 + y);
+      } else {
+        path.lineTo(x, size.height / 2 + y);
+      }
+    }
+
+    path.lineTo(size.width, size.height);
+    path.lineTo(0, size.height);
+    path.close();
+
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return true;
+  }
+}
+
+class WaterClipper extends CustomClipper<Path> {
+  final double progress;
+  WaterClipper({required this.progress});
+
+  @override
+  Path getClip(Size size) {
+    final path = Path();
+    path.moveTo(0, size.height * (1 - progress));
+    path.lineTo(size.width, size.height * (1 - progress));
+    path.lineTo(size.width, size.height);
+    path.lineTo(0, size.height);
+    path.close();
+    return path;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) {
+    return true;
   }
 }
