@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "339008003107",
+    "project_id": "warter-track-data",
+    "storage_bucket": "warter-track-data.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:339008003107:android:c676f86edc2ca19b43a596",
+        "android_client_info": {
+          "package_name": "com.example.water_tracking_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "339008003107-kjs6hl04rt0bh7sk6qc9jeotj3305pqd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.water_tracking_app",
+            "certificate_hash": "e1ff2b9466573c9eaafb03310973211c8cb666ce"
+          }
+        },
+        {
+          "client_id": "339008003107-7tge4dtg7hp0akub209ebdk22i0g7dok.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAzQXYxN_3DdsJhdzoEaZksNQYvnHMXRNA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "339008003107-7tge4dtg7hp0akub209ebdk22i0g7dok.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
