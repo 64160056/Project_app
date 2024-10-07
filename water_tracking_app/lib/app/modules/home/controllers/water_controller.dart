@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:water_tracking_app/app/service/water_data_service.dart';// นำเข้าบริการน้ำ
+import 'package:water_tracking_app/app/modules/home/services/water_data_service.dart';// นำเข้าบริการน้ำ
 
 class WaterController extends GetxController {
   final WaterDataService waterDataService = WaterDataService();

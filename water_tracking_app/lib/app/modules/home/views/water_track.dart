@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:water_tracking_app/app/modules/home/controllers/water_controller.dart';
+import 'package:water_tracking_app/app/modules/home/views/Noti_view.dart';
 import 'dart:math' as math;
 
 import 'package:water_tracking_app/app/modules/home/views/add_weter.dart';
@@ -74,7 +75,8 @@ class _WaterTrackState extends State<WaterTrack>
                       borderRadius: BorderRadius.circular(100), // ทำให้เป็นวงรี
                       child: ClipPath(
                         clipper: WaterClipper(
-                            progress: waterController.waterAmount.value / maxWaterLevel),
+                            progress: waterController.waterAmount.value /
+                                maxWaterLevel),
                         child: AnimatedBuilder(
                           animation: _controller,
                           builder: (context, child) {
@@ -91,7 +93,10 @@ class _WaterTrackState extends State<WaterTrack>
                       ),
                     ),
                     Positioned(
-                      top: 420 - (400 * (waterController.waterAmount.value / maxWaterLevel)),
+                      top: 420 -
+                          (400 *
+                              (waterController.waterAmount.value /
+                                  maxWaterLevel)),
                       child: Text(
                         '${(waterController.waterAmount.value / maxWaterLevel * 100).toInt()}%',
                         style: TextStyle(
@@ -157,6 +162,15 @@ class _WaterTrackState extends State<WaterTrack>
         iconSize: 35,
         selectedItemColor: Colors.blue,
         unselectedItemColor: Colors.grey,
+        onTap: (index) {
+          if (index == 0){
+            Get.to(() => WaterTrack());
+          }
+          if (index == 2) {
+            // สมมติว่าตำแหน่งที่ 2 คือหน้าการแจ้งเตือน
+            Get.to(() => NotiView());
+          }
+        },
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.water_drop),
