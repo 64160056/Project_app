@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -6,7 +7,7 @@ class NotificationService {
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
-  Future<void> initNotifications() async {
+  Future<void> initNotifications(BuildContext context) async {
     tz.initializeTimeZones(); // เริ่มต้นข้อมูล timezone
 
     const AndroidInitializationSettings initializationSettingsAndroid =
@@ -16,15 +17,21 @@ class NotificationService {
       android: initializationSettingsAndroid,
     );
 
-    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings,
+        onDidReceiveNotificationResponse: (NotificationResponse notificationResponse) {
+        if (notificationResponse.payload != null) {
+          showNotificationDialog(context); // Show dialog when the notification is selected
+        }
+      },);
   }
 
   Future<void> scheduleNotification(
       DateTime scheduledTime, String title, String body) async {
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
-      'your_channel_id', 
+      'your_channel_id',
       'your_channel_name',
+      sound: RawResourceAndroidNotificationSound('your_sound_file'), // เสียงที่คุณต้องการใช้
       importance: Importance.max,
       priority: Priority.high,
       showWhen: true,
@@ -46,6 +53,25 @@ class NotificationService {
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle, // ใช้ตัวแปรใหม่
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
+      payload: 'This is a notification payload', // ส่ง payload
+    );
+  }
+
+  void showNotificationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("แจ้งเตือน"),
+        content: Text("ถึงเวลาที่ตั้งไว้แล้ว โปรดดื่มน้ำ"),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Text("ตกลง"),
+          ),
+        ],
+      ),
     );
   }
 }

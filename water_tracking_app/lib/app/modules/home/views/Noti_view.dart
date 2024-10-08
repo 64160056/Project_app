@@ -9,6 +9,8 @@ class NotiView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    notificationService
+        .initNotifications(context); // เรียกใช้ initNotifications
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
@@ -17,41 +19,6 @@ class NotiView extends StatelessWidget {
           centerTitle: true,
         ),
         body: NotificationPage(notificationService: notificationService),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () async {
-            TimeOfDay? pickedTime = await showTimePicker(
-              context: context,
-              initialTime: TimeOfDay.now(),
-            );
-
-            if (pickedTime != null) {
-              DateTime now = DateTime.now();
-              DateTime scheduledTime = DateTime(
-                now.year,
-                now.month,
-                now.day,
-                pickedTime.hour,
-                pickedTime.minute,
-              );
-
-              await notificationService.scheduleNotification(
-                scheduledTime,
-                'แจ้งเตือนดื่มน้ำ',
-                'ได้เวลาที่ตั้งไว้แล้ว โปรดดื่มน้ำ',
-              );
-
-              print('Scheduled at: $scheduledTime');
-            }
-          },
-          backgroundColor: const Color.fromARGB(255, 158, 240, 253),
-          child: Icon(
-            Icons.add,
-            size: 30,
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(50),
-          ),
-        ),
         bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
           backgroundColor: Colors.lightBlue[50],
@@ -112,6 +79,25 @@ class NotificationPage extends StatefulWidget {
 class _NotificationPageState extends State<NotificationPage> {
   List<Notification> notifications = [];
 
+  // Function to select time
+  void selectTime() async {
+    TimeOfDay? pickedTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+
+    if (pickedTime != null) {
+      addNotificationTime(pickedTime); // Add the picked time to notifications
+      print('Selected time: $pickedTime');
+    }
+  }
+
+  void addNotificationTime(TimeOfDay time) {
+    setState(() {
+      notifications.add(Notification(time: time)); // Add new notification
+    });
+  }
+
   void toggleSwitch(bool value, int index) {
     setState(() {
       notifications[index].isEnabled = value;
@@ -127,26 +113,18 @@ class _NotificationPageState extends State<NotificationPage> {
         notifications[index].time.minute,
       );
 
+      // ถ้าเวลาที่เลือกอยู่ก่อนเวลาปัจจุบัน ให้เลื่อนไปวันถัดไป
+      if (scheduledTime.isBefore(now)) {
+        scheduledTime = scheduledTime.add(Duration(days: 1));
+      }
+
       widget.notificationService.scheduleNotification(
         scheduledTime,
         'แจ้งเตือนดื่มน้ำ',
         'ได้เวลาที่ตั้งไว้แล้ว โปรดดื่มน้ำ',
       );
     } else {
-      // Here you can implement logic to cancel the notification
-    }
-  }
-
-  Future<void> selectTime() async {
-    TimeOfDay? pickedTime = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay.now(),
-    );
-
-    if (pickedTime != null) {
-      setState(() {
-        notifications.add(Notification(time: pickedTime)); // Add new notification
-      });
+      // Logic to cancel the notification can be added here
     }
   }
 
@@ -186,9 +164,27 @@ class _NotificationPageState extends State<NotificationPage> {
           ),
         ),
         ElevatedButton(
-          onPressed: selectTime, // Trigger selectTime when the button is pressed
-          child: Text('Add Notification Time'),
+          onPressed:
+              selectTime, // Trigger selectTime when the button is pressed
+          child: Text(
+            'Add Notification Time',
+            style: TextStyle(
+              fontSize: 18, // ขนาดฟอนต์
+              fontWeight: FontWeight.bold, // น้ำหนักฟอนต์
+              color: const Color.fromARGB(255, 5, 5, 5), // สีฟอนต์
+            ),
+          ),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Color.fromARGB(255, 174, 224, 189), // สีพื้นหลัง
+            padding: EdgeInsets.symmetric(
+                vertical: 16.0, horizontal: 32.0), // การจัดการ padding
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10), // มุมของปุ่ม
+            ),
+            elevation: 5, // ความสูงของเงา
+          ),
         ),
+        SizedBox(height: 16,)
       ],
     );
   }
