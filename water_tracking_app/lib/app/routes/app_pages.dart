@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:water_tracking_app/app/modules/home/views/Noti_view.dart';
 import 'package:water_tracking_app/app/modules/home/views/add_weter.dart';
+import 'package:water_tracking_app/app/modules/home/views/history_view.dart';
 import 'package:water_tracking_app/app/modules/home/views/info_view.dart';
 import 'package:water_tracking_app/app/modules/home/views/profile_view.dart';
 import 'package:water_tracking_app/app/modules/home/views/water_track.dart';
@@ -45,6 +46,11 @@ class AppPages {
     GetPage(
       name: _Paths.NOTIFICATION,
       page: () => NotiView(),
+      binding: HomeBinding(),
+    ),
+    GetPage(
+      name: _Paths.HISTORY,
+      page: () => HistoryView(),
       binding: HomeBinding(),
     ),
   ];

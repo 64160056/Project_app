@@ -14,4 +14,5 @@ abstract class _Paths {
   static const WATERTRACK = '/water_track';
   static const ADDWATER = '/add_water';
   static const NOTIFICATION = '/notification';
+  static const HISTORY = '/history';
 }
