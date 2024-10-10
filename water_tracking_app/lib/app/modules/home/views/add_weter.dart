@@ -4,12 +4,14 @@ import 'package:water_tracking_app/app/modules/home/views/water_track.dart';
 
 class AddWeter extends StatelessWidget {
   static const String nameRoute = '/add_weter';
+
+  const AddWeter({super.key});
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: Text(
+          title: const Text(
             'ปริมาณการดื่ม',
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
@@ -23,6 +25,8 @@ class AddWeter extends StatelessWidget {
 }
 
 class WaterVolumeScreen extends StatefulWidget {
+  const WaterVolumeScreen({super.key});
+
   @override
   _WaterVolumeScreenState createState() => _WaterVolumeScreenState();
 }
@@ -44,15 +48,15 @@ class _WaterVolumeScreenState extends State<WaterVolumeScreen> {
     return Column(
       children: [
         Container(
-          padding: EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16.0),
         ),
         Expanded(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: GridView.builder(
               shrinkWrap: true, // ทำให้ GridView ขยายเท่าที่จำเป็น
-              physics: NeverScrollableScrollPhysics(),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3, // จำนวนปุ่มในแต่ละแถว
                 crossAxisSpacing: 15.0,
                 mainAxisSpacing: 15.0,
@@ -81,7 +85,7 @@ class _WaterVolumeScreenState extends State<WaterVolumeScreen> {
                               color: Colors.grey.withOpacity(0.5), // สีของเงา
                               spreadRadius: 2, // ระยะกระจายของเงา
                               blurRadius: 5, // ระยะเบลอของเงา
-                              offset: Offset(0, 3), // การเลื่อนของเงา (x, y)
+                              offset: const Offset(0, 3), // การเลื่อนของเงา (x, y)
                             ),
                           ],
                         ),
@@ -90,10 +94,10 @@ class _WaterVolumeScreenState extends State<WaterVolumeScreen> {
                           backgroundImage: AssetImage(volumes[index]['image']),
                         ),
                       ),
-                      SizedBox(height: 8),
+                      const SizedBox(height: 8),
                       Text(
                         volumes[index]['label'],
-                        style: TextStyle(fontSize: 15),
+                        style: const TextStyle(fontSize: 15),
                       ),
                     ],
                   ),
@@ -102,7 +106,7 @@ class _WaterVolumeScreenState extends State<WaterVolumeScreen> {
             ),
           ),
         ),
-        Container(
+        SizedBox(
           height: 150, // ความสูงของคลื่นน้ำที่ด้านล่าง
           child: Stack(
             children: [
@@ -121,7 +125,7 @@ class _WaterVolumeScreenState extends State<WaterVolumeScreen> {
 }
 
 void showCustomAmountDialog(BuildContext context) {
-  final TextEditingController _controller = TextEditingController();
+  final TextEditingController controller = TextEditingController();
 
   showDialog(
     context: context,
@@ -133,74 +137,74 @@ void showCustomAmountDialog(BuildContext context) {
         child: Container(
           height: 250,
           decoration: BoxDecoration(
-            image: DecorationImage(
+            image: const DecorationImage(
               image: AssetImage('assets/wavedialog.png'),
               fit: BoxFit.cover,
             ),
             borderRadius: BorderRadius.circular(20),
           ),
           child: Padding(
-            padding: EdgeInsets.all(20),
+            padding: const EdgeInsets.all(20),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Text(
+                const Text(
                   'กำหนดเอง',
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: const Color.fromARGB(255, 13, 13, 13),
+                    color: Color.fromARGB(255, 13, 13, 13),
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SizedBox(
                       width: 150,
                       child: TextField(
-                        controller: _controller,
+                        controller: controller,
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
                           hintText: 'Enter amount',
-                          hintStyle: TextStyle(
-                              color: const Color.fromARGB(255, 127, 127, 127)),
+                          hintStyle: const TextStyle(
+                              color: Color.fromARGB(255, 127, 127, 127)),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
                         ),
-                        style: TextStyle(
-                            color: const Color.fromARGB(255, 7, 7, 7)),
+                        style: const TextStyle(
+                            color: Color.fromARGB(255, 7, 7, 7)),
                       ),
                     ),
-                    SizedBox(width: 10),
-                    Text(
+                    const SizedBox(width: 10),
+                    const Text(
                       'ml.',
                       style: TextStyle(
                           fontSize: 16,
-                          color: const Color.fromARGB(255, 0, 0, 0)),
+                          color: Color.fromARGB(255, 0, 0, 0)),
                     ),
                   ],
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
-                    final amount = int.tryParse(_controller.text) ?? 0; // แปลงข้อความเป็นจำนวน
+                    final amount = int.tryParse(controller.text) ?? 0; // แปลงข้อความเป็นจำนวน
                     Navigator.of(context).pop(amount); // ส่งค่ากลับ
                      Get.back(
                           result: amount);
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color.fromARGB(255, 136, 195, 130),
+                    backgroundColor: const Color.fromARGB(255, 136, 195, 130),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    minimumSize: Size(150, 50),
+                    minimumSize: const Size(150, 50),
                   ),
-                  child: Text(
+                  child: const Text(
                     'Add',
                     style: TextStyle(
-                      color: const Color.fromARGB(255, 0, 0, 0),
+                      color: Color.fromARGB(255, 0, 0, 0),
                       fontSize: 20,
                     ),
                   ),

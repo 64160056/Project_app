@@ -61,14 +61,14 @@ class NotificationService {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text("แจ้งเตือน"),
-        content: Text("ถึงเวลาที่ตั้งไว้แล้ว โปรดดื่มน้ำ"),
+        title: const Text("แจ้งเตือน"),
+        content: const Text("ถึงเวลาที่ตั้งไว้แล้ว โปรดดื่มน้ำ"),
         actions: [
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
             },
-            child: Text("ตกลง"),
+            child: const Text("ตกลง"),
           ),
         ],
       ),

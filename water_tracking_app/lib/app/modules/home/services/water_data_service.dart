@@ -14,6 +14,6 @@ class WaterDataService {
   // ฟังก์ชันดึงข้อมูลน้ำที่ดื่ม
   Future<List<Map<String, dynamic>>> getWaterIntake() async {
     final snapshot = await _db.collection('waterIntake').orderBy('timestamp').get();
-    return snapshot.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
+    return snapshot.docs.map((doc) => doc.data()).toList();
   }
 }

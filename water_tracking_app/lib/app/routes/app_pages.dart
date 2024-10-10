@@ -1,9 +1,13 @@
 import 'package:get/get.dart';
+import 'package:water_tracking_app/LoginPage.dart';
 import 'package:water_tracking_app/app/modules/home/views/Noti_view.dart';
 import 'package:water_tracking_app/app/modules/home/views/add_weter.dart';
 import 'package:water_tracking_app/app/modules/home/views/info_view.dart';
+import 'package:water_tracking_app/app/modules/home/views/login_view.dart';
 import 'package:water_tracking_app/app/modules/home/views/profile_view.dart';
+import 'package:water_tracking_app/app/modules/home/views/register_view.dart';
 import 'package:water_tracking_app/app/modules/home/views/water_track.dart';
+import 'package:water_tracking_app/register.dart';
 
 
 import '../modules/home/bindings/home_binding.dart';
@@ -39,12 +43,22 @@ class AppPages {
     ),
         GetPage(
       name: _Paths.PROFILE,
-      page: () => ProfileView(),
+      page: () => const ProfileView(),
       binding: HomeBinding(),
     ),
     GetPage(
       name: _Paths.NOTIFICATION,
       page: () => NotiView(),
+      binding: HomeBinding(),
+    ),
+    GetPage(
+      name: _Paths.LOGIN,
+      page: () => const LoginView(),
+      binding: HomeBinding(),
+    ),
+    GetPage(
+      name: _Paths.REGISTER,
+      page: () => const RegisterView(),
       binding: HomeBinding(),
     ),
   ];

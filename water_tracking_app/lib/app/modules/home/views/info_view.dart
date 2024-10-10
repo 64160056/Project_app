@@ -10,7 +10,7 @@ class InfoView extends GetView<HomeController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('ข้อมูลของคุณ', style: TextStyle(fontSize: 20)),
+        title: const Text('ข้อมูลของคุณ', style: TextStyle(fontSize: 20)),
         backgroundColor: Colors.lightBlue[100],
         centerTitle: true,
       ),
@@ -23,36 +23,36 @@ class InfoView extends GetView<HomeController> {
               onPressed: () {
                 // TODO: Add Profile action
               },
-              child: Text('Profile'),
               style: ElevatedButton.styleFrom(
-                minimumSize: Size(double.infinity, 50),
+                minimumSize: const Size(double.infinity, 50),
                 backgroundColor: Colors.grey[300],
                 foregroundColor: Colors.black,
               ),
+              child: Text('Profile'),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {
                 // TODO: Add Edit your weight action
               },
-              child: Text('Edit your weight'),
               style: ElevatedButton.styleFrom(
-                minimumSize: Size(double.infinity, 50),
+                minimumSize: const Size(double.infinity, 50),
                 backgroundColor: Colors.grey[300],
                 foregroundColor: Colors.black,
               ),
+              child: Text('Edit your weight'),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {
                 // TODO: Add Logout action
               },
-              child: Text('Logout'),
               style: ElevatedButton.styleFrom(
-                minimumSize: Size(double.infinity, 50),
+                minimumSize: const Size(double.infinity, 50),
                 backgroundColor: Colors.grey[300],
                 foregroundColor: Colors.black,
               ),
+              child: Text('Logout'),
             ),
           ],
         ),
@@ -63,7 +63,7 @@ class InfoView extends GetView<HomeController> {
         iconSize: 35,
         selectedItemColor: Colors.blue,
         unselectedItemColor: Colors.grey,
-        items: [
+        items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.water_drop),
             label: '',

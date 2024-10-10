@@ -7,6 +7,8 @@ import 'package:water_tracking_app/app/modules/home/views/water_track.dart';
 class NotiView extends StatelessWidget {
   final NotificationService notificationService = NotificationService();
 
+  NotiView({super.key});
+
   @override
   Widget build(BuildContext context) {
     notificationService
@@ -14,7 +16,7 @@ class NotiView extends StatelessWidget {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: Text('แจ้งเตือน'),
+          title: const Text('แจ้งเตือน'),
           backgroundColor: Colors.lightBlue[100],
           centerTitle: true,
         ),
@@ -33,10 +35,10 @@ class NotiView extends StatelessWidget {
             } else if (index == 2) {
               Get.to(() => NotiView());
             } else if (index == 3) {
-              Get.to(() => ProfileView());
+              Get.to(() => const ProfileView());
             }
           },
-          items: [
+          items: const [
             BottomNavigationBarItem(
               icon: Icon(Icons.water_drop),
               label: '',
@@ -70,7 +72,7 @@ class Notification {
 class NotificationPage extends StatefulWidget {
   final NotificationService notificationService;
 
-  NotificationPage({required this.notificationService});
+  const NotificationPage({super.key, required this.notificationService});
 
   @override
   _NotificationPageState createState() => _NotificationPageState();
@@ -115,7 +117,7 @@ class _NotificationPageState extends State<NotificationPage> {
 
       // ถ้าเวลาที่เลือกอยู่ก่อนเวลาปัจจุบัน ให้เลื่อนไปวันถัดไป
       if (scheduledTime.isBefore(now)) {
-        scheduledTime = scheduledTime.add(Duration(days: 1));
+        scheduledTime = scheduledTime.add(const Duration(days: 1));
       }
 
       widget.notificationService.scheduleNotification(
@@ -140,7 +142,7 @@ class _NotificationPageState extends State<NotificationPage> {
       children: [
         Expanded(
           child: ListView.builder(
-            padding: EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(16.0),
             itemCount: notifications.length,
             itemBuilder: (context, index) {
               return Dismissible(
@@ -148,7 +150,7 @@ class _NotificationPageState extends State<NotificationPage> {
                 onDismissed: (direction) {
                   deleteNotification(index);
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Deleted Notification')),
+                    const SnackBar(content: Text('Deleted Notification')),
                   );
                 },
                 background: Container(color: Colors.red),
@@ -165,7 +167,16 @@ class _NotificationPageState extends State<NotificationPage> {
         ),
         ElevatedButton(
           onPressed:
-              selectTime, // Trigger selectTime when the button is pressed
+              selectTime,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color.fromARGB(255, 174, 224, 189), // สีพื้นหลัง
+            padding: const EdgeInsets.symmetric(
+                vertical: 16.0, horizontal: 32.0), // การจัดการ padding
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10), // มุมของปุ่ม
+            ),
+            elevation: 5, // ความสูงของเงา
+          ), // Trigger selectTime when the button is pressed
           child: Text(
             'Add Notification Time',
             style: TextStyle(
@@ -174,17 +185,8 @@ class _NotificationPageState extends State<NotificationPage> {
               color: const Color.fromARGB(255, 5, 5, 5), // สีฟอนต์
             ),
           ),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Color.fromARGB(255, 174, 224, 189), // สีพื้นหลัง
-            padding: EdgeInsets.symmetric(
-                vertical: 16.0, horizontal: 32.0), // การจัดการ padding
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10), // มุมของปุ่ม
-            ),
-            elevation: 5, // ความสูงของเงา
-          ),
         ),
-        SizedBox(height: 16,)
+        const SizedBox(height: 16,)
       ],
     );
   }
@@ -195,7 +197,7 @@ class NotificationTile extends StatelessWidget {
   final bool value;
   final Function(bool) onChanged;
 
-  NotificationTile({
+  const NotificationTile({super.key, 
     required this.time,
     required this.value,
     required this.onChanged,
@@ -204,8 +206,8 @@ class NotificationTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(bottom: 16.0),
-      padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
+      margin: const EdgeInsets.only(bottom: 16.0),
+      padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
       decoration: BoxDecoration(
         color: Colors.lightBlue[50],
         borderRadius: BorderRadius.circular(10),
@@ -215,7 +217,7 @@ class NotificationTile extends StatelessWidget {
         children: [
           Text(
             time,
-            style: TextStyle(fontSize: 18),
+            style: const TextStyle(fontSize: 18),
           ),
           Switch(
             value: value,
