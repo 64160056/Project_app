@@ -25,7 +25,7 @@ class _DrinkWaterState extends State<DrinkWater> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                'กำหนดเป้าหมายของคุณ',
+                'Set your goals',
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,

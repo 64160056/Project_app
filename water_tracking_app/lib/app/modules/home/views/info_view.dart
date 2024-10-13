@@ -15,7 +15,7 @@ class InfoView extends GetView<HomeController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('ข้อมูลของคุณ', style: TextStyle(fontSize: 20)),
+        title: const Text('Your information', style: TextStyle(fontSize: 20)),
         backgroundColor: Colors.lightBlue[100],
         centerTitle: true,
       ),
