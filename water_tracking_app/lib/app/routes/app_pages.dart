@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:water_tracking_app/LoginPage.dart';
+import 'package:water_tracking_app/app/modules/home/views/DrinkWater.dart';
 import 'package:water_tracking_app/app/modules/home/views/Noti_view.dart';
 import 'package:water_tracking_app/app/modules/home/views/add_weter.dart';
 import 'package:water_tracking_app/app/modules/home/views/info_view.dart';
@@ -59,6 +60,11 @@ class AppPages {
     GetPage(
       name: _Paths.REGISTER,
       page: () => const RegisterView(),
+      binding: HomeBinding(),
+    ),
+    GetPage(
+      name: _Paths.DRINKWATER,
+      page: () => DrinkWater(),
       binding: HomeBinding(),
     ),
   ];
