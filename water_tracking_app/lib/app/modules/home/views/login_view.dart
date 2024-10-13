@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart'; // Import Firestore
 import 'package:water_tracking_app/app/modules/home/views/add_weight.dart';
 import 'package:water_tracking_app/app/modules/home/views/water_track.dart';
 import 'register_view.dart'; // Import RegisterView here
-import 'home_view.dart'; // Import the HomeView (or your desired view)
 
 class LoginView extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();
@@ -16,8 +16,19 @@ class LoginView extends StatelessWidget {
         email: email,
         password: password,
       );
-      // Login สำเร็จ - นำทางไปหน้า HomeView
-      Get.off(() => AddWeight()); // เปลี่ยนหน้าไปยัง HomeView
+
+      // ตรวจสอบว่าผู้ใช้มีข้อมูลใน Firestore หรือไม่
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('users').doc(userCredential.user?.uid).get();
+
+      if (userDoc.exists) {
+        // ถ้ามีข้อมูลให้ไปที่หน้า AddWeight
+        Get.off(() => WaterTrack());
+      } else {
+        // ถ้าไม่มีข้อมูลให้ไปที่หน้า NewUserPage (สร้างหน้าสำหรับผู้ใช้ใหม่)
+        Get.off(() => AddWeight()); // สร้างหน้าใหม่ที่คุณต้องการ
+      }
+
+      Get.snackbar('Success', 'Logged in successfully');
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         Get.snackbar('Error', 'No user found for that email.');
@@ -112,8 +123,7 @@ class LoginView extends StatelessWidget {
                     signIn(email, password);
                   },
                   style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 50, vertical: 15),
+                    padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                     backgroundColor: Colors.lightBlue, // Blue background
                   ),
                   child: const Text(

@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:water_tracking_app/app/modules/home/views/DrinkWater.dart';
 import 'package:water_tracking_app/app/modules/home/views/add_weight.dart';
 import 'package:water_tracking_app/app/modules/home/views/login_view.dart';
+import 'package:water_tracking_app/app/modules/home/views/profile_view.dart';
 import 'package:water_tracking_app/app/modules/home/views/water_track.dart';
 import '../controllers/home_controller.dart';
 
@@ -35,7 +36,7 @@ class HomeView extends GetView<HomeController> {
             // Add the button with text "เริ่ม"
             ElevatedButton(
               onPressed: () {
-                Get.to(() => LoginView());//<--------------แก้หน้าเชื่อมตรงนี้
+                Get.to(() => ProfileView());//<--------------แก้หน้าเชื่อมตรงนี้
               },
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
