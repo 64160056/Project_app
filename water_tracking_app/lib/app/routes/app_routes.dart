@@ -14,12 +14,9 @@ abstract class _Paths {
   static const WATERTRACK = '/water_track';
   static const ADDWATER = '/add_water';
   static const NOTIFICATION = '/notification';
-<<<<<<< HEAD
   static const HISTORY = '/history';
-=======
   static const LOGIN = '/login_view';
   static const REGISTER = '/register_view';
   static const DRINKWATER = '/DrinkWater';
   static const ADDWEIGHT = '/add_weight';
->>>>>>> 3e90fe856146b4e069bfc67ef387d32010f73ba2
 }

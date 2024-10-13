@@ -1,10 +1,7 @@
 import 'package:get/get.dart';
 import 'package:water_tracking_app/LoginPage.dart';
-import 'package:water_tracking_app/app/modules/home/views/DrinkWater.dart';
 import 'package:water_tracking_app/app/modules/home/views/Noti_view.dart';
-import 'package:water_tracking_app/app/modules/home/views/add_weight.dart';
 import 'package:water_tracking_app/app/modules/home/views/add_weter.dart';
-import 'package:water_tracking_app/app/modules/home/views/history_view.dart';
 import 'package:water_tracking_app/app/modules/home/views/info_view.dart';
 import 'package:water_tracking_app/app/modules/home/views/login_view.dart';
 import 'package:water_tracking_app/app/modules/home/views/profile_view.dart';
@@ -21,9 +18,7 @@ part 'app_routes.dart';
 class AppPages {
   AppPages._();
 
-// ignore: constant_identifier_names
-static const INITIAL = Routes.HOME;
-
+  static const INITIAL = Routes.HOME;
 
   static final routes = [
     GetPage(
@@ -57,10 +52,6 @@ static const INITIAL = Routes.HOME;
       binding: HomeBinding(),
     ),
     GetPage(
-<<<<<<< HEAD
-      name: _Paths.HISTORY,
-      page: () => HistoryView(),
-=======
       name: _Paths.LOGIN,
       page: () =>  LoginView(),
       binding: HomeBinding(),
@@ -70,14 +61,9 @@ static const INITIAL = Routes.HOME;
       page: () =>  RegisterView(),
       binding: HomeBinding(),
     ),
-    GetPage(
-      name: _Paths.DRINKWATER,
-      page: () => DrinkWater(),
-    ),
      GetPage(
       name: _Paths.ADDWEIGHT,
-      page: () => const AddWeight(),
->>>>>>> 3e90fe856146b4e069bfc67ef387d32010f73ba2
+      page: () => const AddWeter(),
       binding: HomeBinding(),
     ),
   ];

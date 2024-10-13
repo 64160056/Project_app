@@ -17,13 +17,8 @@ class NotiView extends StatelessWidget {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-<<<<<<< HEAD
           title: Text('แจ้งเตือน'),
           backgroundColor: const Color.fromARGB(255, 132, 216, 255),
-=======
-          title: const Text('แจ้งเตือน'),
-          backgroundColor: Colors.lightBlue[100],
->>>>>>> 3e90fe856146b4e069bfc67ef387d32010f73ba2
           centerTitle: true,
         ),
         
@@ -38,17 +33,12 @@ class NotiView extends StatelessWidget {
             if (index == 0) {
               Get.to(() => WaterTrack());
             } else if (index == 1) {
-              Get.to(() => HistoryView())
+              Get.to(() => HistoryView());
             } else if (index == 2) {
               Get.to(() => NotiView());
             } else if (index == 3) {
-<<<<<<< HEAD
               Get.to(() => ProfileView());
             } 
-=======
-              Get.to(() => const ProfileView());
-            }
->>>>>>> 3e90fe856146b4e069bfc67ef387d32010f73ba2
           },
           items: const [
             BottomNavigationBarItem(
@@ -197,22 +187,8 @@ class _NotificationPageState extends State<NotificationPage> {
               color: const Color.fromARGB(255, 5, 5, 5), // สีฟอนต์
             ),
           ),
-<<<<<<< HEAD
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Color.fromARGB(255, 174, 224, 189), // สีพื้นหลัง
-            padding: EdgeInsets.symmetric(
-                vertical: 16.0, horizontal: 32.0), // การจัดการ padding
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20), // มุมของปุ่ม
-            ),
-            elevation: 5, // ความสูงของเงา
-          ),
-        ),
-        SizedBox(height: 20,)
-=======
         ),
         const SizedBox(height: 16,)
->>>>>>> 3e90fe856146b4e069bfc67ef387d32010f73ba2
       ],
     );
   }
