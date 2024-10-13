@@ -35,7 +35,7 @@ class HomeView extends GetView<HomeController> {
             // Add the button with text "เริ่ม"
             ElevatedButton(
               onPressed: () {
-                Get.to(() => AddWeight());//<--------------แก้หน้าเชื่อมตรงนี้
+                Get.to(() => LoginView());//<--------------แก้หน้าเชื่อมตรงนี้
               },
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),

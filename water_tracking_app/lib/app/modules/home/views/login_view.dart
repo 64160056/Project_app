@@ -1,11 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'register_view.dart'; // Import RegisterView here
 
 class LoginView extends StatelessWidget {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
+ 
 
-const LoginView({super.key});
+  Future<void> signIn(String email, String password) async {
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      // Login สำเร็จ
+      Get.snackbar('Success', 'Logged in successfully');
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        Get.snackbar('Error', 'No user found for that email.');
+      } else if (e.code == 'wrong-password') {
+        Get.snackbar('Error', 'Wrong password provided.');
+      } else {
+        Get.snackbar('Error', e.message ?? 'Login failed');
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,10 +58,11 @@ const LoginView({super.key});
                 ),
                 const SizedBox(height: 40), // Add space below the logo
 
-                // Username input
+                // Username input (Email)
                 TextField(
+                  controller: _emailController,
                   decoration: InputDecoration(
-                    labelText: 'ชื่อผู้ใช้',
+                    labelText: 'อีเมล',
                     filled: true,
                     fillColor: Colors.grey[300],
                     border: InputBorder.none,
@@ -50,6 +72,7 @@ const LoginView({super.key});
 
                 // Password input
                 TextField(
+                  controller: _passwordController,
                   obscureText: true,
                   decoration: InputDecoration(
                     labelText: 'รหัสผ่าน',
@@ -66,7 +89,7 @@ const LoginView({super.key});
                   child: GestureDetector(
                     onTap: () {
                       // Navigate to RegisterView using Get
-                      Get.to(() => const RegisterView());
+                      Get.to(() => RegisterView());
                     },
                     child: const Text(
                       'สมัครสมาชิก',
@@ -83,7 +106,9 @@ const LoginView({super.key});
                 ElevatedButton(
                   onPressed: () {
                     // Handle login action
-                    print('Login button pressed');
+                    String email = _emailController.text;
+                    String password = _passwordController.text;
+                    signIn(email, password);
                   },
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(

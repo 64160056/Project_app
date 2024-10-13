@@ -1,7 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:firebase_auth/firebase_auth.dart'; // Import Firebase
 
 class RegisterView extends StatelessWidget {
-  const RegisterView({super.key});
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
+
+  RegisterView({super.key});
+
+  // Method for registering user with Firebase
+  Future<void> registerUser(String email, String password) async {
+    try {
+      // Firebase method to create a new user
+      UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      // Registration success
+      Get.snackbar('Success', 'Registered successfully!');
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        Get.snackbar('Error', 'The password provided is too weak.');
+      } else if (e.code == 'email-already-in-use') {
+        Get.snackbar('Error', 'The account already exists for that email.');
+      } else {
+        Get.snackbar('Error', e.message ?? 'Registration failed.');
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,10 +65,11 @@ class RegisterView extends StatelessWidget {
                 ),
                 const SizedBox(height: 40), // Add space below the logo
 
-                // Username input
+                // Username input (Email)
                 TextField(
+                  controller: _usernameController, // Bind the controller
                   decoration: InputDecoration(
-                    labelText: 'ชื่อผู้ใช้',
+                    labelText: 'อีเมล',
                     filled: true,
                     fillColor: Colors.grey[300],
                     border: InputBorder.none,
@@ -51,6 +79,7 @@ class RegisterView extends StatelessWidget {
 
                 // Password input
                 TextField(
+                  controller: _passwordController, // Bind the controller
                   obscureText: true,
                   decoration: InputDecoration(
                     labelText: 'รหัสผ่าน',
@@ -63,6 +92,7 @@ class RegisterView extends StatelessWidget {
 
                 // Confirm password input
                 TextField(
+                  controller: _confirmPasswordController, // Bind the controller
                   obscureText: true,
                   decoration: InputDecoration(
                     labelText: 'ยืนยันรหัสผ่าน',
@@ -76,8 +106,16 @@ class RegisterView extends StatelessWidget {
                 // Register button
                 ElevatedButton(
                   onPressed: () {
-                    // Handle registration action
-                    print('Register button pressed');
+                    // Get the values of email and password from the input fields
+                    String email = _usernameController.text;
+                    String password = _passwordController.text;
+                    String confirmPassword = _confirmPasswordController.text;
+
+                    if (password == confirmPassword) {
+                      registerUser(email, password); // Call register method
+                    } else {
+                      Get.snackbar('Error', 'Passwords do not match.');
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(

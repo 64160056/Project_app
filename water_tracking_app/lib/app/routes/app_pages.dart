@@ -20,7 +20,9 @@ part 'app_routes.dart';
 class AppPages {
   AppPages._();
 
-  static const INITIAL = Routes.HOME;
+// ignore: constant_identifier_names
+static const INITIAL = Routes.HOME;
+
 
   static final routes = [
     GetPage(
@@ -55,12 +57,12 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.LOGIN,
-      page: () => const LoginView(),
+      page: () =>  LoginView(),
       binding: HomeBinding(),
     ),
     GetPage(
       name: _Paths.REGISTER,
-      page: () => const RegisterView(),
+      page: () =>  RegisterView(),
       binding: HomeBinding(),
     ),
     GetPage(
