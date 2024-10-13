@@ -57,10 +57,10 @@ static const INITIAL = Routes.HOME;
       binding: HomeBinding(),
     ),
     GetPage(
-<<<<<<< HEAD
       name: _Paths.HISTORY,
       page: () => HistoryView(),
-=======
+    ),
+    GetPage(
       name: _Paths.LOGIN,
       page: () =>  LoginView(),
       binding: HomeBinding(),
@@ -77,7 +77,6 @@ static const INITIAL = Routes.HOME;
      GetPage(
       name: _Paths.ADDWEIGHT,
       page: () => const AddWeight(),
->>>>>>> 3e90fe856146b4e069bfc67ef387d32010f73ba2
       binding: HomeBinding(),
     ),
   ];

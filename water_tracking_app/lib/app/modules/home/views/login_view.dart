@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:water_tracking_app/app/modules/home/views/add_weight.dart';
+import 'package:water_tracking_app/app/modules/home/views/water_track.dart';
 import 'register_view.dart'; // Import RegisterView here
+import 'home_view.dart'; // Import the HomeView (or your desired view)
 
 class LoginView extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-
- 
 
   Future<void> signIn(String email, String password) async {
     try {
@@ -15,8 +16,8 @@ class LoginView extends StatelessWidget {
         email: email,
         password: password,
       );
-      // Login สำเร็จ
-      Get.snackbar('Success', 'Logged in successfully');
+      // Login สำเร็จ - นำทางไปหน้า HomeView
+      Get.off(() => AddWeight()); // เปลี่ยนหน้าไปยัง HomeView
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         Get.snackbar('Error', 'No user found for that email.');

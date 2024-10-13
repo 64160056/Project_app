@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:water_tracking_app/app/modules/home/services/notification_service.dart';
-import 'package:water_tracking_app/app/modules/home/views/history_view.dart';
 import 'package:water_tracking_app/app/modules/home/views/profile_view.dart';
 import 'package:water_tracking_app/app/modules/home/views/water_track.dart';
 
@@ -17,16 +16,10 @@ class NotiView extends StatelessWidget {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-<<<<<<< HEAD
-          title: Text('แจ้งเตือน'),
-          backgroundColor: const Color.fromARGB(255, 132, 216, 255),
-=======
           title: const Text('แจ้งเตือน'),
           backgroundColor: Colors.lightBlue[100],
->>>>>>> 3e90fe856146b4e069bfc67ef387d32010f73ba2
           centerTitle: true,
         ),
-        
         body: NotificationPage(notificationService: notificationService),
         bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
@@ -38,17 +31,12 @@ class NotiView extends StatelessWidget {
             if (index == 0) {
               Get.to(() => WaterTrack());
             } else if (index == 1) {
-              Get.to(() => HistoryView())
+              // Handle history page
             } else if (index == 2) {
               Get.to(() => NotiView());
             } else if (index == 3) {
-<<<<<<< HEAD
-              Get.to(() => ProfileView());
-            } 
-=======
               Get.to(() => const ProfileView());
             }
->>>>>>> 3e90fe856146b4e069bfc67ef387d32010f73ba2
           },
           items: const [
             BottomNavigationBarItem(
@@ -165,7 +153,7 @@ class _NotificationPageState extends State<NotificationPage> {
                     const SnackBar(content: Text('Deleted Notification')),
                   );
                 },
-                background: Container(color: const Color.fromARGB(255, 255, 117, 107)),
+                background: Container(color: Colors.red),
                 child: NotificationTile(
                   time: notifications[index].time.format(context),
                   value: notifications[index].isEnabled,
@@ -190,29 +178,15 @@ class _NotificationPageState extends State<NotificationPage> {
             elevation: 5, // ความสูงของเงา
           ), // Trigger selectTime when the button is pressed
           child: Text(
-            'Add Time',
+            'Add Notification Time',
             style: TextStyle(
               fontSize: 18, // ขนาดฟอนต์
               fontWeight: FontWeight.bold, // น้ำหนักฟอนต์
               color: const Color.fromARGB(255, 5, 5, 5), // สีฟอนต์
             ),
           ),
-<<<<<<< HEAD
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Color.fromARGB(255, 174, 224, 189), // สีพื้นหลัง
-            padding: EdgeInsets.symmetric(
-                vertical: 16.0, horizontal: 32.0), // การจัดการ padding
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20), // มุมของปุ่ม
-            ),
-            elevation: 5, // ความสูงของเงา
-          ),
-        ),
-        SizedBox(height: 20,)
-=======
         ),
         const SizedBox(height: 16,)
->>>>>>> 3e90fe856146b4e069bfc67ef387d32010f73ba2
       ],
     );
   }
@@ -235,7 +209,7 @@ class NotificationTile extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 16.0),
       padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
       decoration: BoxDecoration(
-        color: const Color.fromARGB(255, 157, 222, 251),
+        color: Colors.lightBlue[50],
         borderRadius: BorderRadius.circular(10),
       ),
       child: Row(

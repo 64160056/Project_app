@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart'; // Import Firebase
+import 'package:water_tracking_app/app/modules/home/views/login_view.dart';
+import 'home_view.dart'; // Import HomeView (or your desired view)
 
 class RegisterView extends StatelessWidget {
   final TextEditingController _usernameController = TextEditingController();
@@ -17,8 +19,8 @@ class RegisterView extends StatelessWidget {
         email: email,
         password: password,
       );
-      // Registration success
-      Get.snackbar('Success', 'Registered successfully!');
+      // Registration success - นำทางไปยังหน้า HomeView
+      Get.off(() => LoginView()); // นำผู้ใช้ไปยังหน้า HomeView หลังจากสมัครสมาชิกสำเร็จ
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         Get.snackbar('Error', 'The password provided is too weak.');
