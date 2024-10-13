@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:water_tracking_app/app/modules/home/views/editprofile_view%20copy.dart';
 
 import '../controllers/home_controller.dart';
 
@@ -63,7 +64,7 @@ class ProfileView extends GetView<HomeController> {
                 flex: 2,
                 child: ElevatedButton(
                   onPressed: () {
-                    // ทำงานเมื่อกดปุ่มแก้ไข
+                    Get.to(EditprofileView());
                     print('Edit Profile button pressed');
                   },
                   style: ElevatedButton.styleFrom(
