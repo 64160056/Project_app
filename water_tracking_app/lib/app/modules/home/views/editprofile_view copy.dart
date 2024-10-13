@@ -104,7 +104,7 @@ class EditprofileView extends GetView<HomeController> {
     // ฟังก์ชันสำหรับบันทึกข้อมูลโปรไฟล์
     String name = _nameController.text;
     String email = _emailController.text;
-     String email = _emailController.text;
+
 
     // ตรวจสอบและบันทึกข้อมูล
     print("Name: $name");
