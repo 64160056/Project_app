@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:water_tracking_app/app/modules/home/views/DrinkWater.dart';
+import 'package:water_tracking_app/app/modules/home/views/profile_view.dart';
 
 class AddWeight extends StatelessWidget {
   const AddWeight({super.key});
@@ -24,7 +28,7 @@ class _WaterTrackerScreenState extends State<WaterTrackerScreen> {
   final TextEditingController _weightController = TextEditingController();
   double waterGoal = 0; // Default value
 
-  void _calculateWaterGoal() {
+  void _calculateWaterGoal(String value) {
     double weight = double.tryParse(_weightController.text) ?? 0.0;
     // Example calculation: 30 ml per kg of body weight
     setState(() {
@@ -49,9 +53,12 @@ class _WaterTrackerScreenState extends State<WaterTrackerScreen> {
             ),
           ),
           SizedBox(height: 10),
-          TextField(
+             TextField(
             controller: _weightController,
             keyboardType: TextInputType.number,
+            onChanged: (value) {
+              _calculateWaterGoal(value); // เรียกคำนวณเมื่อมีการเปลี่ยนแปลงใน TextField
+            },
             decoration: InputDecoration(
               border: OutlineInputBorder(),
               labelText: 'น้ำหนักของคุณ (kg)',
@@ -73,7 +80,9 @@ class _WaterTrackerScreenState extends State<WaterTrackerScreen> {
           ),
           SizedBox(height: 80),
           ElevatedButton(
-            onPressed: _calculateWaterGoal,
+            onPressed: () {
+                Get.to(DrinkWater());
+              },
             style: ElevatedButton.styleFrom(
               minimumSize: Size(150, 50),
               padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),

@@ -1,18 +1,4 @@
 import 'package:flutter/material.dart';
-
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: DrinkWater(),
-    );
-  }
-}
-
 class DrinkWater extends StatefulWidget {
   @override
   _DrinkWaterState createState() => _DrinkWaterState();
