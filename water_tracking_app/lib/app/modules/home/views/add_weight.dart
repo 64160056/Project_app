@@ -22,13 +22,13 @@ class WaterTrackerScreen extends StatefulWidget {
 
 class _WaterTrackerScreenState extends State<WaterTrackerScreen> {
   final TextEditingController _weightController = TextEditingController();
-  double waterGoal = 2500; // Default value
+  double waterGoal = 0; // Default value
 
   void _calculateWaterGoal() {
     double weight = double.tryParse(_weightController.text) ?? 0.0;
-    // Example calculation: 35 ml per kg of body weight
+    // Example calculation: 30 ml per kg of body weight
     setState(() {
-      waterGoal = weight * 35;
+      waterGoal = weight * 30;
     });
   }
 
