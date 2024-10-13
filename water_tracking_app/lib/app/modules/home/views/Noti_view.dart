@@ -16,7 +16,7 @@ class NotiView extends StatelessWidget {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('แจ้งเตือน'),
+          title: const Text('Notification'),
           backgroundColor: Colors.lightBlue[100],
           centerTitle: true,
         ),

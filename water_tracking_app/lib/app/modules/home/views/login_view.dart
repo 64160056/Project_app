@@ -63,7 +63,7 @@ class LoginView extends StatelessWidget {
                 TextField(
                   controller: _emailController,
                   decoration: InputDecoration(
-                    labelText: 'อีเมล',
+                    labelText: 'Email',
                     filled: true,
                     fillColor: Colors.grey[300],
                     border: InputBorder.none,
@@ -76,7 +76,7 @@ class LoginView extends StatelessWidget {
                   controller: _passwordController,
                   obscureText: true,
                   decoration: InputDecoration(
-                    labelText: 'รหัสผ่าน',
+                    labelText: 'Password',
                     filled: true,
                     fillColor: Colors.grey[300],
                     border: InputBorder.none,
@@ -93,7 +93,7 @@ class LoginView extends StatelessWidget {
                       Get.to(() => RegisterView());
                     },
                     child: const Text(
-                      'สมัครสมาชิก',
+                      'Register',
                       style: TextStyle(
                         decoration: TextDecoration.underline,
                         color: Colors.black,
