@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:water_tracking_app/app/modules/home/views/DrinkWater.dart';
 import 'package:water_tracking_app/app/modules/home/views/profile_view.dart';
+import 'package:water_tracking_app/app/modules/home/views/water_track.dart';
 
 class AddWeight extends StatelessWidget {
   const AddWeight({super.key});
@@ -66,7 +67,7 @@ class _WaterTrackerScreenState extends State<WaterTrackerScreen> {
           ),
           SizedBox(height: 110),
           Text(
-            'เป้าหมายการดื่มของคุณ',
+            'ปริมาณน้ำที่คุณควรดื่ม',
             style: TextStyle(
               fontSize: 25, // กำหนดขนาดตัวอักษร
               color: Colors.blue,
@@ -81,7 +82,7 @@ class _WaterTrackerScreenState extends State<WaterTrackerScreen> {
           SizedBox(height: 80),
           ElevatedButton(
             onPressed: () {
-                Get.to(DrinkWater());
+                Get.to(WaterTrack());
               },
             style: ElevatedButton.styleFrom(
               minimumSize: Size(150, 50),

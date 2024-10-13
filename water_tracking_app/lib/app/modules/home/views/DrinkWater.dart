@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/src/extension_navigation.dart';
+import 'package:water_tracking_app/app/modules/home/views/water_track.dart';
 class DrinkWater extends StatefulWidget {
   @override
   _DrinkWaterState createState() => _DrinkWaterState();
@@ -50,13 +53,14 @@ class _DrinkWaterState extends State<DrinkWater> {
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
-                  // Action ที่ต้องการให้เกิดเมื่อกดปุ่ม
+                  Get.to(WaterTrack());
                   print('Target: $_target ml');
                 },
-                child: Text('Let go'),
+                child: Text('Go!'),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
-                  padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                  foregroundColor: Colors.white,
+                  padding: EdgeInsets.symmetric(horizontal: 40, vertical: 20),
                   textStyle: TextStyle(fontSize: 18),
                 ),
               ),

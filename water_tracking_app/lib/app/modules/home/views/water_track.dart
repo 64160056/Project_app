@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:water_tracking_app/app/modules/home/controllers/water_controller.dart';
+import 'package:water_tracking_app/app/modules/home/views/DrinkWater.dart';
 import 'package:water_tracking_app/app/modules/home/views/Noti_view.dart';
 import 'dart:math' as math;
 
@@ -118,7 +119,7 @@ class _WaterTrackState extends State<WaterTrack>
                 children: [
                   ElevatedButton(
                     onPressed: () {
-                      // Handle button click
+                      Get.to(DrinkWater());
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color.fromARGB(255, 236, 255, 165),
