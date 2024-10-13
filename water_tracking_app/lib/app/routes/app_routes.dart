@@ -16,4 +16,5 @@ abstract class _Paths {
   static const NOTIFICATION = '/notification';
   static const LOGIN = '/login_view';
   static const REGISTER = '/register_view';
+  static const ADDWEIGHT = '/add_weight';
 }
