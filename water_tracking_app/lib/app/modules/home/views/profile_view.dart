@@ -10,7 +10,7 @@ class ProfileView extends GetView<HomeController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Profile', style: TextStyle(fontSize: 20)),
+        title: const Text('Profile', style: TextStyle(fontSize: 20)),
         backgroundColor: Colors.lightBlue[100],
         centerTitle: true,
       ),
@@ -26,14 +26,14 @@ class ProfileView extends GetView<HomeController> {
                 flex: 3,
                 child: CircleAvatar(
                   radius: MediaQuery.of(context).size.width * 0.2, // ขนาดสมส่วน
-                   backgroundImage: AssetImage('assets/me.jpg'),
+                   backgroundImage: const AssetImage('assets/me.jpg'),
                 
                   ),
                 ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
 
               // ชื่อผู้ใช้
-              Flexible(
+              const Flexible(
                 flex: 1,
                 child: Text(
                   'John Doe', // ชื่อผู้ใช้
@@ -43,7 +43,7 @@ class ProfileView extends GetView<HomeController> {
                   ),
                 ),
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
 
               // อีเมลผู้ใช้
               Flexible(
@@ -56,7 +56,7 @@ class ProfileView extends GetView<HomeController> {
                   ),
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
 
               // ปุ่มแก้ไขโปรไฟล์
               Flexible(
@@ -68,9 +68,9 @@ class ProfileView extends GetView<HomeController> {
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.lightBlue[200], // สีปุ่ม
-                    padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                    padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                   ),
-                  child: Text(
+                  child: const Text(
                     'Edit Profile',
                     style: TextStyle(fontSize: 18),
                   ),
@@ -86,7 +86,7 @@ class ProfileView extends GetView<HomeController> {
         iconSize: 35,
         selectedItemColor: Colors.blue,
         unselectedItemColor: Colors.grey,
-        items: [
+        items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.water_drop),
             label: '',

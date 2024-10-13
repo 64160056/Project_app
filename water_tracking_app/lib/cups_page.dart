@@ -6,7 +6,7 @@ import 'package:water_tracking_app/LoginPage.dart';
 
 class CupsPage extends StatefulWidget {
   static const String nameRoute = '/cups_page';
-  const CupsPage({Key? key}) : super(key: key);
+  const CupsPage({super.key});
 
   @override
   _CupsPageState createState() => _CupsPageState();

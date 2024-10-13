@@ -28,5 +28,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/water_bottle.png
+    - assets/water1.png
+    - assets/water2.png
     - assets/wave.png
     - assets/wavedialog.png

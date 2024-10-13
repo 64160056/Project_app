@@ -1,10 +1,16 @@
 import 'package:get/get.dart';
+import 'package:water_tracking_app/LoginPage.dart';
+import 'package:water_tracking_app/app/modules/home/views/DrinkWater.dart';
 import 'package:water_tracking_app/app/modules/home/views/Noti_view.dart';
+import 'package:water_tracking_app/app/modules/home/views/add_weight.dart';
 import 'package:water_tracking_app/app/modules/home/views/add_weter.dart';
 import 'package:water_tracking_app/app/modules/home/views/history_view.dart';
 import 'package:water_tracking_app/app/modules/home/views/info_view.dart';
+import 'package:water_tracking_app/app/modules/home/views/login_view.dart';
 import 'package:water_tracking_app/app/modules/home/views/profile_view.dart';
+import 'package:water_tracking_app/app/modules/home/views/register_view.dart';
 import 'package:water_tracking_app/app/modules/home/views/water_track.dart';
+import 'package:water_tracking_app/register.dart';
 
 
 import '../modules/home/bindings/home_binding.dart';
@@ -15,7 +21,9 @@ part 'app_routes.dart';
 class AppPages {
   AppPages._();
 
-  static const INITIAL = Routes.HOME;
+// ignore: constant_identifier_names
+static const INITIAL = Routes.HOME;
+
 
   static final routes = [
     GetPage(
@@ -40,7 +48,7 @@ class AppPages {
     ),
         GetPage(
       name: _Paths.PROFILE,
-      page: () => ProfileView(),
+      page: () => const ProfileView(),
       binding: HomeBinding(),
     ),
     GetPage(
@@ -49,8 +57,27 @@ class AppPages {
       binding: HomeBinding(),
     ),
     GetPage(
+<<<<<<< HEAD
       name: _Paths.HISTORY,
       page: () => HistoryView(),
+=======
+      name: _Paths.LOGIN,
+      page: () =>  LoginView(),
+      binding: HomeBinding(),
+    ),
+    GetPage(
+      name: _Paths.REGISTER,
+      page: () =>  RegisterView(),
+      binding: HomeBinding(),
+    ),
+    GetPage(
+      name: _Paths.DRINKWATER,
+      page: () => DrinkWater(),
+    ),
+     GetPage(
+      name: _Paths.ADDWEIGHT,
+      page: () => const AddWeight(),
+>>>>>>> 3e90fe856146b4e069bfc67ef387d32010f73ba2
       binding: HomeBinding(),
     ),
   ];

@@ -1,58 +1,63 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:water_tracking_app/app/modules/home/views/Noti_view.dart';
+import 'package:water_tracking_app/app/modules/home/views/add_weight.dart';
+import 'package:water_tracking_app/app/modules/home/views/add_weter.dart';
+import 'package:water_tracking_app/app/modules/home/views/profile_view.dart';
 
 import '../controllers/home_controller.dart';
 
 class InfoView extends GetView<HomeController> {
   const InfoView({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('ข้อมูลของคุณ', style: TextStyle(fontSize: 20)),
+        title: const Text('ข้อมูลของคุณ', style: TextStyle(fontSize: 20)),
         backgroundColor: Colors.lightBlue[100],
         centerTitle: true,
       ),
-       body: Padding(
+      body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             ElevatedButton(
               onPressed: () {
-                // TODO: Add Profile action
+                Get.to(ProfileView());
               },
+              style: ElevatedButton.styleFrom(
+                minimumSize: const Size(double.infinity, 50),
+                backgroundColor: Colors.grey[300],
+                foregroundColor: Colors.black,
+              ),
               child: Text('Profile'),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () {
+                Get.to(AddWeight());
+              },
               style: ElevatedButton.styleFrom(
-                minimumSize: Size(double.infinity, 50),
+                minimumSize: const Size(double.infinity, 50),
                 backgroundColor: Colors.grey[300],
                 foregroundColor: Colors.black,
               ),
-            ),
-            SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () {
-                // TODO: Add Edit your weight action
-              },
               child: Text('Edit your weight'),
-              style: ElevatedButton.styleFrom(
-                minimumSize: Size(double.infinity, 50),
-                backgroundColor: Colors.grey[300],
-                foregroundColor: Colors.black,
-              ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {
-                // TODO: Add Logout action
+                controller.logout();
               },
-              child: Text('Logout'),
               style: ElevatedButton.styleFrom(
-                minimumSize: Size(double.infinity, 50),
+                minimumSize: const Size(double.infinity, 50),
                 backgroundColor: Colors.grey[300],
                 foregroundColor: Colors.black,
               ),
+              child: Text('Logout'),
             ),
           ],
         ),
@@ -63,7 +68,7 @@ class InfoView extends GetView<HomeController> {
         iconSize: 35,
         selectedItemColor: Colors.blue,
         unselectedItemColor: Colors.grey,
-        items: [
+        items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.water_drop),
             label: '',

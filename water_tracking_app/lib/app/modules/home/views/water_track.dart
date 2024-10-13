@@ -9,6 +9,8 @@ import 'package:water_tracking_app/app/modules/home/views/add_weter.dart';
 class WaterTrack extends StatefulWidget {
   static const String nameRoute = '/water_track';
 
+  const WaterTrack({super.key});
+
   @override
   _WaterTrackState createState() => _WaterTrackState();
 }
@@ -25,7 +27,7 @@ class _WaterTrackState extends State<WaterTrack>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: Duration(seconds: 2),
+      duration: const Duration(seconds: 2),
     )..repeat(); // Repeat the animation to simulate the water flow
   }
 
@@ -40,7 +42,7 @@ class _WaterTrackState extends State<WaterTrack>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(
+        title: const Center(
             child: Text(
           'เป้าหมายการดื่มน้ำของคุณ',
           style:
@@ -53,13 +55,13 @@ class _WaterTrackState extends State<WaterTrack>
           children: [
             Text(
               '${maxWaterLevel.toInt()} ml',
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 40,
                 color: Color.fromARGB(255, 0, 94, 188),
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Obx(() => Stack(
                   alignment: Alignment.center,
                   children: [
@@ -99,7 +101,7 @@ class _WaterTrackState extends State<WaterTrack>
                                   maxWaterLevel)),
                       child: Text(
                         '${(waterController.waterAmount.value / maxWaterLevel * 100).toInt()}%',
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 40,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
@@ -108,7 +110,7 @@ class _WaterTrackState extends State<WaterTrack>
                     ),
                   ],
                 )),
-            SizedBox(height: 30),
+            const SizedBox(height: 30),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 25.0),
               child: Row(
@@ -119,13 +121,13 @@ class _WaterTrackState extends State<WaterTrack>
                       // Handle button click
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color.fromARGB(255, 236, 255, 165),
+                      backgroundColor: const Color.fromARGB(255, 236, 255, 165),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      minimumSize: Size(150, 60),
+                      minimumSize: const Size(150, 60),
                     ),
-                    child: Text(
+                    child: const Text(
                       'เป้าหมายใหม่',
                       style: TextStyle(
                           color: Colors.black,
@@ -142,12 +144,12 @@ class _WaterTrackState extends State<WaterTrack>
                       }
                     },
                     backgroundColor: const Color.fromARGB(255, 149, 219, 173),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(50),
+                    ),
                     child: Icon(
                       Icons.add,
                       size: 30,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(50),
                     ),
                   ),
                 ],
@@ -171,7 +173,7 @@ class _WaterTrackState extends State<WaterTrack>
             Get.to(() => NotiView());
           }
         },
-        items: [
+        items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.water_drop),
             label: '',
@@ -203,8 +205,8 @@ class WaterPainter extends CustomPainter {
     final paint = Paint()..color = Colors.blueAccent;
     final path = Path();
 
-    final double waveHeight = 20;
-    final double waveFrequency = 1.5 * math.pi;
+    const double waveHeight = 20;
+    const double waveFrequency = 1.5 * math.pi;
 
     for (double x = 0; x <= size.width; x++) {
       final double y = waveHeight *

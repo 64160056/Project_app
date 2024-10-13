@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 class RegisterPage extends StatelessWidget {
   static const String nameRoute = '/register';
 
+  const RegisterPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -59,7 +61,7 @@ class RegisterPage extends StatelessWidget {
                                   borderRadius: BorderRadius.all(Radius.circular(10)),
                                 )),
                           ),
-                          SizedBox(height: 30),
+                          const SizedBox(height: 30),
                           
                           // ฟิลด์สำหรับกรอกอีเมล
                           const TextField(
@@ -83,7 +85,7 @@ class RegisterPage extends StatelessWidget {
                                   borderRadius: BorderRadius.all(Radius.circular(10)),
                                 )),
                           ),
-                          SizedBox(height: 30),
+                          const SizedBox(height: 30),
 
                           // ฟิลด์สำหรับกรอกรหัสผ่าน
                           const TextField(
@@ -108,7 +110,7 @@ class RegisterPage extends StatelessWidget {
                                   borderRadius: BorderRadius.all(Radius.circular(10)),
                                 )),
                           ),
-                          SizedBox(height: 40),
+                          const SizedBox(height: 40),
                           
                           // แถวปุ่ม 'Sign Up' และปุ่มลูกศร
                           Row(
@@ -134,7 +136,7 @@ class RegisterPage extends StatelessWidget {
                               )
                             ],
                           ),
-                          SizedBox(height: 40),
+                          const SizedBox(height: 40),
 
                           // แถวปุ่ม 'Sign In'
                           Row(
