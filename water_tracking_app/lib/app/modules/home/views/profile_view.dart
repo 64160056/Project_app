@@ -27,7 +27,7 @@ class ProfileView extends GetView<HomeController> {
                 flex: 3,
                 child: CircleAvatar(
                   radius: MediaQuery.of(context).size.width * 0.2, // ขนาดสมส่วน
-                   backgroundImage: const AssetImage('assets/me.jpg'),
+                   backgroundImage: const AssetImage('assets/profile.png'),
                 
                   ),
                 ),

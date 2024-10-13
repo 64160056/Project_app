@@ -12,13 +12,9 @@ import 'package:water_tracking_app/app/modules/home/views/profile_view.dart';
 import 'package:water_tracking_app/app/modules/home/views/register_view.dart';
 import 'package:water_tracking_app/app/modules/home/views/water_track.dart';
 import 'package:water_tracking_app/register.dart';
-
-
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
-
 part 'app_routes.dart';
-
 class AppPages {
   AppPages._();
 
@@ -38,11 +34,6 @@ class AppPages {
     GetPage(
       name: _Paths.WATERTRACK,
       page: () => WaterTrack(),
-      binding: HomeBinding(),
-    ),
-    GetPage(
-      name: _Paths.ADDWATER,
-      page: () => AddWeter(),
       binding: HomeBinding(),
     ),
         GetPage(
