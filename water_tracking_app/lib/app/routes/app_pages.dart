@@ -21,9 +21,7 @@ part 'app_routes.dart';
 class AppPages {
   AppPages._();
 
-// ignore: constant_identifier_names
-static const INITIAL = Routes.HOME;
-
+  static const INITIAL = Routes.HOME;
 
   static final routes = [
     GetPage(
@@ -70,13 +68,18 @@ static const INITIAL = Routes.HOME;
       page: () =>  RegisterView(),
       binding: HomeBinding(),
     ),
-    GetPage(
-      name: _Paths.DRINKWATER,
-      page: () => DrinkWater(),
-    ),
      GetPage(
       name: _Paths.ADDWEIGHT,
       page: () => const AddWeight(),
+     ),
+     GetPage(
+      name: _Paths.ADDWATER,
+      page: () => const AddWeter(),
+      binding: HomeBinding(),
+    ),
+      GetPage(
+      name: _Paths.DRINKWATER,
+      page: () =>  DrinkWater(),
       binding: HomeBinding(),
     ),
   ];
