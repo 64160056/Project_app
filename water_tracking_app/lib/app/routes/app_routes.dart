@@ -17,4 +17,5 @@ abstract class _Paths {
   static const LOGIN = '/login_view';
   static const REGISTER = '/register_view';
   static const DRINKWATER = '/DrinkWater';
+  static const ADDWEIGHT = '/add_weight';
 }
