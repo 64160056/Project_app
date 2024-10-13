@@ -46,7 +46,7 @@ class _WaterTrackerScreenState extends State<WaterTrackerScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
-            'เพิ่มข้อมูลน้ำหนักของคุณ',
+            'Add your weight',
             style: TextStyle(
               fontSize: 25,
               color: Colors.blue, // ตั้งค่าสีฟ้าสำหรับข้อความ
@@ -62,12 +62,12 @@ class _WaterTrackerScreenState extends State<WaterTrackerScreen> {
             },
             decoration: InputDecoration(
               border: OutlineInputBorder(),
-              labelText: 'น้ำหนักของคุณ (kg)',
+              labelText: 'your weight (kg)',
             ),
           ),
           SizedBox(height: 110),
           Text(
-            'ปริมาณน้ำที่คุณควรดื่ม',
+            'The amount you should drink',
             style: TextStyle(
               fontSize: 25, // กำหนดขนาดตัวอักษร
               color: Colors.blue,

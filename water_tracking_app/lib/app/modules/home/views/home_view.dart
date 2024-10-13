@@ -19,9 +19,9 @@ class HomeView extends GetView<HomeController> {
           children: [
             // Add the text "มากินน้ำกันเถอะ"
             const Text(
-              'มากินน้ำกันเถอะ',
+              'Let drink water',
               style: TextStyle(
-                fontSize: 24,
+                fontSize: 30,
                 color: Colors.blue,
                 fontWeight: FontWeight.bold,
               ),
@@ -42,7 +42,7 @@ class HomeView extends GetView<HomeController> {
                 padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
               ),
               child: const Text(
-                'เริ่ม',
+                'Start',
                 style: TextStyle(fontSize: 20),
               ),
             ),

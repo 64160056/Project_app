@@ -12,7 +12,7 @@ class AddWeter extends StatelessWidget {
       home: Scaffold(
         appBar: AppBar(
           title: const Text(
-            'ปริมาณการดื่ม',
+            'Drinking amount',
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
           backgroundColor: Colors.lightBlue[100],
@@ -149,7 +149,7 @@ void showCustomAmountDialog(BuildContext context) {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 const Text(
-                  'กำหนดเอง',
+                  'customized',
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,

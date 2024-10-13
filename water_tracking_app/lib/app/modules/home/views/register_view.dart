@@ -71,7 +71,7 @@ class RegisterView extends StatelessWidget {
                 TextField(
                   controller: _usernameController, // Bind the controller
                   decoration: InputDecoration(
-                    labelText: 'อีเมล',
+                    labelText: 'Email',
                     filled: true,
                     fillColor: Colors.grey[300],
                     border: InputBorder.none,
@@ -84,7 +84,7 @@ class RegisterView extends StatelessWidget {
                   controller: _passwordController, // Bind the controller
                   obscureText: true,
                   decoration: InputDecoration(
-                    labelText: 'รหัสผ่าน',
+                    labelText: 'Password',
                     filled: true,
                     fillColor: Colors.grey[300],
                     border: InputBorder.none,
@@ -97,7 +97,7 @@ class RegisterView extends StatelessWidget {
                   controller: _confirmPasswordController, // Bind the controller
                   obscureText: true,
                   decoration: InputDecoration(
-                    labelText: 'ยืนยันรหัสผ่าน',
+                    labelText: 'Confirm password',
                     filled: true,
                     fillColor: Colors.grey[300],
                     border: InputBorder.none,
@@ -125,7 +125,7 @@ class RegisterView extends StatelessWidget {
                     backgroundColor: Colors.lightBlue, // Blue background
                   ),
                   child: const Text(
-                    'ยืนยัน',
+                    'Confirm',
                     style: TextStyle(fontSize: 18, color: Colors.black),
                   ),
                 ),
