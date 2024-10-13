@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:water_tracking_app/app/modules/home/views/Noti_view.dart';
+import 'package:water_tracking_app/app/modules/home/views/add_weight.dart';
+import 'package:water_tracking_app/app/modules/home/views/add_weter.dart';
+import 'package:water_tracking_app/app/modules/home/views/profile_view.dart';
 
 import '../controllers/home_controller.dart';
 
 class InfoView extends GetView<HomeController> {
   const InfoView({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -14,14 +19,14 @@ class InfoView extends GetView<HomeController> {
         backgroundColor: Colors.lightBlue[100],
         centerTitle: true,
       ),
-       body: Padding(
+      body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             ElevatedButton(
               onPressed: () {
-                // TODO: Add Profile action
+                Get.to(ProfileView());
               },
               style: ElevatedButton.styleFrom(
                 minimumSize: const Size(double.infinity, 50),
@@ -33,7 +38,7 @@ class InfoView extends GetView<HomeController> {
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {
-                // TODO: Add Edit your weight action
+                Get.to(AddWeight());
               },
               style: ElevatedButton.styleFrom(
                 minimumSize: const Size(double.infinity, 50),
@@ -45,7 +50,7 @@ class InfoView extends GetView<HomeController> {
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {
-                // TODO: Add Logout action
+                controller.logout();
               },
               style: ElevatedButton.styleFrom(
                 minimumSize: const Size(double.infinity, 50),
