@@ -21,7 +21,7 @@ class WaterTrack extends StatefulWidget {
 class _WaterTrackState extends State<WaterTrack>
     with SingleTickerProviderStateMixin {
   final RxInt waterAmount = 0.obs;
-  final double maxWaterLevel = 2500.0;
+  double waterGoal = 2500.0; // Initialize with a default goal
   late AnimationController _controller;
   final WaterController waterController = Get.put(WaterController());
 
@@ -32,53 +32,69 @@ class _WaterTrackState extends State<WaterTrack>
       vsync: this,
       duration: Duration(seconds: 2),
     )..repeat(); // Repeat the animation to simulate the water flow
+
+    _fetchWaterGoal(); // Fetch the water goal when the widget initializes
   }
 
   @override
   void dispose() {
-    _controller
-        .dispose(); // Ensure the controller is disposed to prevent memory leaks
+    _controller.dispose(); // Ensure the controller is disposed to prevent memory leaks
     super.dispose();
   }
+
+  // Fetch water goal from Firestore
+  Future<void> _fetchWaterGoal() async {
+    final user = FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser?.uid);
+    final doc = await user.get();
+    if (doc.exists && doc.data() != null) {
+      setState(() {
+        waterGoal = doc.data()!['waterGoal'] ?? 2500.0; // Use the fetched goal or default
+      });
+    }
+  }
+
+  // Update water intake in Firestore
   void updateWaterIntake(int addedAmount) {
-  final userId = FirebaseAuth.instance.currentUser?.uid; // Get the logged-in user's ID
-  if (userId != null) {
-    FirebaseFirestore.instance
-      .collection('users')
-      .doc(userId)
-      .set({
-        'amount': waterAmount,
-        'totalWater': waterAmount.value, // Update total water intake
-        'lastIntake': Timestamp.now(),
-        'waterIntake': FieldValue.increment(addedAmount),  // Increment by the added amount
-      }, SetOptions(merge: true))
-      .then((_) {
+    final userId = FirebaseAuth.instance.currentUser?.uid; // Get the logged-in user's ID
+    if (userId != null) {
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .set({
+            'amount': waterAmount, // Store current amount
+            'totalWater': waterAmount.value , // Update total water intake
+            'lastIntake': Timestamp.now(),
+            'waterIntake': FieldValue.increment(addedAmount), // Increment by the added amount
+          }, SetOptions(merge: true))
+          .then((_) {
         print("Water intake added/updated successfully!");
       }).catchError((error) {
         print("Error updating water intake: $error");
       });
-  } else {
-    print("No user is logged in.");
+    } else {
+      print("No user is logged in.");
+    }
   }
-}
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Center(
-            child: Text(
-          'เป้าหมายการดื่มน้ำของคุณ',
-          style:
-              TextStyle(fontSize: 25, color: Color.fromARGB(255, 0, 94, 188)),
-        )),
+          child: Text(
+            'เป้าหมายการดื่มน้ำของคุณ',
+            style: TextStyle(fontSize: 25, color: Color.fromARGB(255, 0, 94, 188)),
+          ),
+        ),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              '${maxWaterLevel.toInt()} ml',
+              '${waterGoal.toInt()} ml', // Display the dynamic water goal
               style: TextStyle(
                 fontSize: 40,
                 color: Color.fromARGB(255, 0, 94, 188),
@@ -98,11 +114,11 @@ class _WaterTrackState extends State<WaterTrack>
                       ),
                     ),
                     ClipRRect(
-                      borderRadius: BorderRadius.circular(100), // ทำให้เป็นวงรี
+                      borderRadius: BorderRadius.circular(100),
                       child: ClipPath(
                         clipper: WaterClipper(
                             progress: waterController.waterAmount.value /
-                                maxWaterLevel),
+                                waterGoal), // Use the dynamic water goal
                         child: AnimatedBuilder(
                           animation: _controller,
                           builder: (context, child) {
@@ -119,12 +135,9 @@ class _WaterTrackState extends State<WaterTrack>
                       ),
                     ),
                     Positioned(
-                      top: 420 -
-                          (400 *
-                              (waterController.waterAmount.value /
-                                  maxWaterLevel)),
+                      top: 420 - (400 * (waterController.waterAmount.value / waterGoal)), // Dynamic top position based on goal
                       child: Text(
-                        '${(waterController.waterAmount.value / maxWaterLevel * 100).toInt()}%',
+                        '${(waterController.waterAmount.value / waterGoal * 100).toInt()}%', // Show the percentage relative to the dynamic water goal
                         style: TextStyle(
                           fontSize: 40,
                           fontWeight: FontWeight.bold,
@@ -183,7 +196,7 @@ class _WaterTrackState extends State<WaterTrack>
           ],
         ),
       ),
-      bottomNavigationBar: Tapbar(), // ใช้ CustomNavigationBar ที่แยกไว้
+      bottomNavigationBar: Tapbar(), // Use CustomNavigationBar as needed
     );
   }
 }

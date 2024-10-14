@@ -53,7 +53,8 @@ class WaterController extends GetxController {
     await _firestore.collection('users').doc(userId).update({
       'amount': amount,
       'totalWater': waterAmount.value, // Update total water intake
-      'lastIntake': Timestamp.now(), // Optional: store last intake time
+      'lastIntake': Timestamp.now(),
+       // Optional: store last intake time
     }).catchError((error) {
       print("Error updating water intake: $error");
       // Handle the error (show alert or log)

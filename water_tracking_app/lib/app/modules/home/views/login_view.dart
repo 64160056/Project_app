@@ -12,60 +12,65 @@ class LoginView extends StatelessWidget {
   final RxBool _isLoading = false.obs; // Loading state
 
   Future<void> signIn(String email, String password) async {
-  _isLoading.value = true; // Start loading
+    _isLoading.value = true; // Start loading
 
-  try {
-    // Attempt to sign in the user
-    UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
+    try {
+      // Attempt to sign in the user
+      UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
 
-    // Get the user document from Firestore
-    DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('users').doc(userCredential.user?.uid).get();
+      // Get the user document from Firestore
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('users').doc(userCredential.user?.uid).get();
 
-    // Check if user document exists and navigate accordingly
-    if (userDoc.exists) {
-      // Navigate to the WaterTrack page if user data exists
-      Get.off(() => WaterTrack());
-    } else {
-      // Navigate to AddWeight page if user data does not exist
-      Get.off(() => AddWeight());
+      // Check if user document exists
+      if (userDoc.exists) {
+        // Check if weight information exists
+        if ((userDoc.data() as Map<String, dynamic>)['weight'] != null) {
+          // Navigate to the WaterTrack page if weight exists
+          Get.off(() => WaterTrack());
+        } else {
+          // Navigate to AddWeight page if weight information does not exist
+          Get.off(() => AddWeight());
+        }
+      } else {
+        Get.snackbar('Error', 'User document not found. Please contact support.');
+      }
+
+      // Show success message
+      Get.snackbar('Success', 'Logged in successfully');
+    } on FirebaseAuthException catch (e) {
+      // Handle specific Firebase authentication errors
+      String message = 'Login failed. Please try again.';
+      switch (e.code) {
+        case 'user-not-found':
+          // If user is not found, navigate to the registration page
+          Get.snackbar('Error', 'No user found for that email. Redirecting to registration...');
+          Get.to(() => RegisterView());
+          return; // Exit after navigation
+        case 'wrong-password':
+          message = 'Wrong password provided.';
+          break;
+        case 'invalid-email':
+          message = 'The email address is not valid.';
+          break;
+        case 'user-disabled':
+          message = 'The user account has been disabled.';
+          break;
+        default:
+          message = e.message ?? message; // Fallback to generic message
+          break;
+      }
+      // Show error message
+      Get.snackbar('Error', message);
+    } catch (e) {
+      // Handle any other errors
+      Get.snackbar('Error', 'An unexpected error occurred: ${e.toString()}');
+    } finally {
+      _isLoading.value = false; // Stop loading
     }
-
-    // Show success message
-    Get.snackbar('Success', 'Logged in successfully');
-  } on FirebaseAuthException catch (e) {
-    // Handle specific Firebase authentication errors
-    String message = 'Login failed. Please try again.';
-    switch (e.code) {
-      case 'user-not-found':
-        message = 'No user found for that email.';
-        break;
-      case 'wrong-password':
-        message = 'Wrong password provided.';
-        break;
-      case 'invalid-email':
-        message = 'The email address is not valid.';
-        break;
-      case 'user-disabled':
-        message = 'The user account has been disabled.';
-        break;
-      default:
-        message = e.message ?? message; // Fallback to generic message
-        break;
-    }
-    // Show error message
-    Get.snackbar('Error', message);
-  } catch (e) {
-    // Handle any other errors
-    Get.snackbar('Error', 'An unexpected error occurred: ${e.toString()}');
-  } finally {
-    _isLoading.value = false; // Stop loading
   }
-}
-
-  
 
   @override
   Widget build(BuildContext context) {
@@ -157,7 +162,7 @@ class LoginView extends StatelessWidget {
                     backgroundColor: Colors.lightBlue,
                   ),
                   child: _isLoading.value
-                      ? CircularProgressIndicator(color: Colors.white) // Loading indicator
+                      ? const CircularProgressIndicator(color: Colors.white) // Loading indicator
                       : const Text(
                           'Login',
                           style: TextStyle(fontSize: 18, color: Colors.black),

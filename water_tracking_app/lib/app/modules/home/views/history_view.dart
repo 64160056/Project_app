@@ -55,6 +55,7 @@ class HistoryView extends StatelessWidget {
       stream: FirebaseFirestore.instance
           .collection('Waterintake')
           .where('userId', isEqualTo: userId) // Query by user ID
+          
           .where('timestamp', isGreaterThanOrEqualTo: DateTime(today.year, today.month, today.day))
           .where('timestamp', isLessThan: DateTime(today.year, today.month, today.day + 1))
           .snapshots(),
