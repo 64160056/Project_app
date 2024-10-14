@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:water_tracking_app/app/modules/home/services/notification_service.dart';
+import 'package:water_tracking_app/app/modules/home/views/component/Tapbar.dart';
+import 'package:water_tracking_app/app/modules/home/views/history_view.dart';
 import 'package:water_tracking_app/app/modules/home/views/profile_view.dart';
 import 'package:water_tracking_app/app/modules/home/views/water_track.dart';
 
@@ -11,52 +13,16 @@ class NotiView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    notificationService
-        .initNotifications(context); // เรียกใช้ initNotifications
+    notificationService.initNotifications(context); // Initialize notifications
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Notification'),
-          backgroundColor: Colors.lightBlue[100],
+          title: Text('แจ้งเตือน'),
+          backgroundColor: const Color.fromARGB(255, 132, 216, 255),
           centerTitle: true,
         ),
         body: NotificationPage(notificationService: notificationService),
-        bottomNavigationBar: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          backgroundColor: Colors.lightBlue[50],
-          iconSize: 35,
-          selectedItemColor: Colors.blue,
-          unselectedItemColor: Colors.grey,
-          onTap: (index) {
-            if (index == 0) {
-              Get.to(() => WaterTrack());
-            } else if (index == 1) {
-              // Handle history page
-            } else if (index == 2) {
-              Get.to(() => NotiView());
-            } else if (index == 3) {
-              Get.to(() => const ProfileView());
-            }
-          },
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.water_drop),
-              label: '',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.history),
-              label: '',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.notifications),
-              label: '',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person),
-              label: '',
-            ),
-          ],
-        ),
+        bottomNavigationBar: Tapbar(),
       ),
     );
   }
@@ -115,7 +81,7 @@ class _NotificationPageState extends State<NotificationPage> {
         notifications[index].time.minute,
       );
 
-      // ถ้าเวลาที่เลือกอยู่ก่อนเวลาปัจจุบัน ให้เลื่อนไปวันถัดไป
+      // If the selected time is before the current time, schedule for the next day
       if (scheduledTime.isBefore(now)) {
         scheduledTime = scheduledTime.add(const Duration(days: 1));
       }
@@ -124,7 +90,9 @@ class _NotificationPageState extends State<NotificationPage> {
         scheduledTime,
         'แจ้งเตือนดื่มน้ำ',
         'ได้เวลาที่ตั้งไว้แล้ว โปรดดื่มน้ำ',
-      );
+      ).catchError((error) {
+        print('Error scheduling notification: $error');
+      });
     } else {
       // Logic to cancel the notification can be added here
     }
@@ -153,7 +121,7 @@ class _NotificationPageState extends State<NotificationPage> {
                     const SnackBar(content: Text('Deleted Notification')),
                   );
                 },
-                background: Container(color: Colors.red),
+                background: Container(color: const Color.fromARGB(255, 255, 117, 107)),
                 child: NotificationTile(
                   time: notifications[index].time.format(context),
                   value: notifications[index].isEnabled,
@@ -166,27 +134,25 @@ class _NotificationPageState extends State<NotificationPage> {
           ),
         ),
         ElevatedButton(
-          onPressed:
-              selectTime,
+          onPressed: selectTime,
           style: ElevatedButton.styleFrom(
-            backgroundColor: const Color.fromARGB(255, 174, 224, 189), // สีพื้นหลัง
-            padding: const EdgeInsets.symmetric(
-                vertical: 16.0, horizontal: 32.0), // การจัดการ padding
+            backgroundColor: const Color.fromARGB(255, 174, 224, 189), // Background color
+            padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 32.0), // Padding
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10), // มุมของปุ่ม
+              borderRadius: BorderRadius.circular(10), // Button corner radius
             ),
-            elevation: 5, // ความสูงของเงา
-          ), // Trigger selectTime when the button is pressed
+            elevation: 5, // Shadow height
+          ),
           child: Text(
-            'Add Notification Time',
+            'Add Time',
             style: TextStyle(
-              fontSize: 18, // ขนาดฟอนต์
-              fontWeight: FontWeight.bold, // น้ำหนักฟอนต์
-              color: const Color.fromARGB(255, 5, 5, 5), // สีฟอนต์
+              fontSize: 18, // Font size
+              fontWeight: FontWeight.bold, // Font weight
+              color: const Color.fromARGB(255, 5, 5, 5), // Font color
             ),
           ),
         ),
-        const SizedBox(height: 16,)
+        const SizedBox(height: 20),
       ],
     );
   }
@@ -197,7 +163,8 @@ class NotificationTile extends StatelessWidget {
   final bool value;
   final Function(bool) onChanged;
 
-  const NotificationTile({super.key, 
+  const NotificationTile({
+    super.key,
     required this.time,
     required this.value,
     required this.onChanged,
@@ -209,7 +176,7 @@ class NotificationTile extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 16.0),
       padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
       decoration: BoxDecoration(
-        color: Colors.lightBlue[50],
+        color: const Color.fromARGB(255, 157, 222, 251),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Row(

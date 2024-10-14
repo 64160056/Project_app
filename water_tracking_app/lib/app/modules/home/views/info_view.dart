@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:water_tracking_app/app/modules/home/views/Noti_view.dart';
 import 'package:water_tracking_app/app/modules/home/views/add_weight.dart';
 import 'package:water_tracking_app/app/modules/home/views/add_weter.dart';
+import 'package:water_tracking_app/app/modules/home/views/component/Tapbar.dart';
 import 'package:water_tracking_app/app/modules/home/views/profile_view.dart';
 
 import '../controllers/home_controller.dart';
@@ -62,31 +63,7 @@ class InfoView extends GetView<HomeController> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        backgroundColor: Colors.lightBlue[50],
-        iconSize: 35,
-        selectedItemColor: Colors.blue,
-        unselectedItemColor: Colors.grey,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.water_drop),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.history),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.notifications),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: '',
-          ),
-        ],
-      ),
+      bottomNavigationBar: Tapbar(),
     );
   }
 }

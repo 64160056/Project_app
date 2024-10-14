@@ -5,15 +5,31 @@ class WaterDataService {
 
   // ฟังก์ชันเพิ่มข้อมูลน้ำที่ดื่ม
   Future<void> addWaterIntake(int amount) async {
-    await _db.collection('waterIntake').add({
-      'amount': amount,
-      'timestamp': FieldValue.serverTimestamp(),
-    });
+    try {
+      await _db.collection('waterIntake').add({
+        'amount': amount,
+        'timestamp': FieldValue.serverTimestamp(),
+      });
+    } catch (e) {
+      print('Error adding water intake: $e');
+      throw Exception('Failed to add water intake');
+    }
   }
 
   // ฟังก์ชันดึงข้อมูลน้ำที่ดื่ม
   Future<List<Map<String, dynamic>>> getWaterIntake() async {
-    final snapshot = await _db.collection('waterIntake').orderBy('timestamp').get();
-    return snapshot.docs.map((doc) => doc.data()).toList();
+    try {
+      final snapshot = await _db.collection('waterIntake').orderBy('timestamp').get();
+      return snapshot.docs.map((doc) {
+        final data = doc.data();
+        return {
+          'amount': data['amount'] ?? 0,
+          'timestamp': (data['timestamp'] as Timestamp).toDate(),
+        };
+      }).toList();
+    } catch (e) {
+      print('Error fetching water intake data: $e');
+      throw Exception('Failed to fetch water intake data');
+    }
   }
 }

@@ -1,123 +1,206 @@
 import 'package:flutter/material.dart';
-import 'package:fl_chart/fl_chart.dart'; // Add this to your pubspec.yaml
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fl_chart/fl_chart.dart';
+import 'package:intl/intl.dart';
+import 'package:water_tracking_app/app/modules/home/views/component/Tapbar.dart';
 
 class HistoryView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return WaterConsumptionHomePage();
-  }
-}
-
-class WaterConsumptionHomePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('ประวัติการดื่มน้ำ'), // Title in Thai
+        title: Text('Water Consumption History'),
         backgroundColor: Colors.lightBlue[100],
         centerTitle: true,
       ),
-      body: Center(
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            // Section 1: Today's consumption list
+            Text(
+              'Today',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 10),
+            Expanded(child: _buildTodayConsumptionList()),
+
+            SizedBox(height: 20),
+            Divider(color: Colors.grey),
+
+            // Section 2: Weekly Bar Chart
             Text(
               'Week',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 20),
-            Container(
-              height: 200,
-              padding: EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: Colors.grey[200],
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: BarChart(
-                BarChartData(
-                  titlesData: FlTitlesData(
-                    bottomTitles: AxisTitles(
-                      sideTitles: SideTitles(
-                        showTitles: true,
-                        getTitlesWidget: (double value, TitleMeta meta) {
-                          const style = TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                          );
-                          String text;
-                          switch (value.toInt()) {
-                            case 0:
-                              text = 'Sun';
-                              break;
-                            case 1:
-                              text = 'Mon';
-                              break;
-                            case 2:
-                              text = 'Tue';
-                              break;
-                            case 3:
-                              text = 'Wed';
-                              break;
-                            case 4:
-                              text = 'Thu';
-                              break;
-                            case 5:
-                              text = 'Fri';
-                              break;
-                            case 6:
-                              text = 'Sat';
-                              break;
-                            default:
-                              return Container();
-                          }
-                          return SideTitleWidget(
-                            axisSide: meta.axisSide,
-                            space: 8.0, // space between bar and title
-                            child: Text(text, style: style),
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                  barGroups: [
-                    BarChartGroupData(x: 0, barRods: [BarChartRodData(toY: 5, color: Colors.grey)]),
-                    BarChartGroupData(x: 1, barRods: [BarChartRodData(toY: 6, color: Colors.grey[700])]),
-                    BarChartGroupData(x: 2, barRods: [BarChartRodData(toY: 3, color: Colors.grey[600])]),
-                    BarChartGroupData(x: 3, barRods: [BarChartRodData(toY: 7, color: Colors.grey[500])]),
-                    BarChartGroupData(x: 4, barRods: [BarChartRodData(toY: 8, color: Colors.grey[400])]),
-                    BarChartGroupData(x: 5, barRods: [BarChartRodData(toY: 9, color: Colors.grey[300])]),
-                    BarChartGroupData(x: 6, barRods: [BarChartRodData(toY: 5, color: Colors.grey[200])]),
-                  ],
-                ),
-              ),
+            SizedBox(height: 10),
+            Expanded(
+              child: _buildWeeklyBarChart(),
             ),
           ],
         ),
       ),
-      bottomNavigationBar: BottomAppBar(
-        child: Container(
-          height: 60,
-          color: Colors.lightBlue[100],
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              IconButton(
-                icon: Icon(Icons.notifications, color: Colors.black),
-                onPressed: () {},
+      bottomNavigationBar: Tapbar(),
+    );
+  }
+
+  // Widget to display today's water consumption in a list
+  Widget _buildTodayConsumptionList() {
+    final today = DateTime.now();
+
+     return StreamBuilder(
+    stream: FirebaseFirestore.instance
+        .collection('Waterintake')
+        .where('timestamp', isGreaterThanOrEqualTo: DateTime(today.year, today.month, today.day))
+        .where('timestamp', isLessThan: DateTime(today.year, today.month, today.day + 1))
+        .snapshots(),
+    builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+      if (snapshot.connectionState == ConnectionState.waiting) {
+        return Center(child: CircularProgressIndicator());
+      }
+      if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+        return Center(child: Text('No data for today.'));
+      }
+
+        return ListView(
+        children: snapshot.data!.docs.map((doc) {
+          Timestamp timestamp = doc['timestamp'];
+          DateTime date = timestamp.toDate();  // Convert Firestore timestamp to DateTime
+
+          return ListTile(
+            leading: Text(
+              DateFormat('HH:mm').format(date),  // Format time from timestamp
+              style: TextStyle(fontSize: 18),
+            ),
+            trailing: Text(
+              '${doc['amount']} ml',
+              style: TextStyle(fontSize: 18),
+            ),
+          );
+        }).toList(),
+        );
+      },
+    );
+  }
+
+  // Widget to display the weekly bar chart
+  Widget _buildWeeklyBarChart() {
+    DateTime now = DateTime.now();
+    DateTime startOfWeek = now.subtract(Duration(days: now.weekday - 1));
+    
+    return StreamBuilder(
+    stream: FirebaseFirestore.instance
+        .collection('Waterintake')
+        .where('timestamp', isGreaterThanOrEqualTo: startOfWeek)
+        .snapshots(),
+    builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+      if (snapshot.connectionState == ConnectionState.waiting) {
+        return Center(child: CircularProgressIndicator());
+      }
+      if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+        return Center(child: Text('No data available for this week.'));
+      }
+
+
+        final dailyData = _processFirebaseData(snapshot.data!.docs);
+
+      return BarChart(
+        BarChartData(
+          alignment: BarChartAlignment.spaceAround,
+          barGroups: dailyData,
+          titlesData: FlTitlesData(
+            show: true,
+            bottomTitles: AxisTitles(
+              sideTitles: SideTitles(
+                showTitles: true,
+                getTitlesWidget: (double value, TitleMeta meta) {
+                  const style = TextStyle(color: Colors.black, fontSize: 12);
+                  Widget text;
+                  switch (value.toInt()) {
+                    case 0:
+                      text = Text('Sun', style: style);
+                      break;
+                    case 1:
+                      text = Text('Mon', style: style);
+                      break;
+                    case 2:
+                      text = Text('Tue', style: style);
+                      break;
+                    case 3:
+                      text = Text('Wed', style: style);
+                      break;
+                    case 4:
+                      text = Text('Thu', style: style);
+                      break;
+                    case 5:
+                      text = Text('Fri', style: style);
+                      break;
+                    case 6:
+                      text = Text('Sat', style: style);
+                      break;
+                    default:
+                      text = Text('');
+                      break;
+                  }
+                    return SideTitleWidget(
+                      axisSide: meta.axisSide,
+                      space: 16,
+                      child: text,
+                    );
+                  },
+                  reservedSize: 42,
+                ),
               ),
-              IconButton(
-                icon: Icon(Icons.history, color: Colors.black),
-                onPressed: () {},
+              leftTitles: AxisTitles(
+                sideTitles: SideTitles(
+                  showTitles: true,
+                  getTitlesWidget: (double value, TitleMeta meta) {
+                    return Text(value.toString(),
+                        style: TextStyle(color: Colors.black, fontSize: 12));
+                  },
+                  interval: 500,
+                  reservedSize: 32,
+                ),
               ),
-              IconButton(
-                icon: Icon(Icons.info, color: Colors.black),
-                onPressed: () {},
+            ),
+            borderData: FlBorderData(show: false),
+            barTouchData: BarTouchData(enabled: true),
+            gridData: FlGridData(show: false),
+          ),
+        );
+      },
+    );
+  }
+
+  List<BarChartGroupData> _processFirebaseData(
+      List<QueryDocumentSnapshot> docs) {
+    Map<int, double> waterData = {for (int i = 0; i < 7; i++) i: 0.0};
+
+    docs.forEach((doc) {
+      try {
+        int dayOfWeek = (doc['dayOfWeek'] ?? 0) - 1;
+        double amount = doc['amount'] != null ? doc['amount'].toDouble() : 0.0;
+        waterData[dayOfWeek] = (waterData[dayOfWeek] ?? 0.0) + amount;
+      } catch (e) {
+        print("Error processing document: ${doc.id}");
+      }
+    });
+
+    return waterData.entries
+        .map(
+          (entry) => BarChartGroupData(
+            x: entry.key,
+            barRods: [
+              BarChartRodData(
+                fromY: 0,
+                toY: entry.value,
+                color: Colors.lightBlue[100],
+                width: 15,
               ),
             ],
           ),
-        ),
-      ),
-    );
+        )
+        .toList();
   }
 }
