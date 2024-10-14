@@ -20,3 +20,5 @@ void addWaterIntakeData(String time, int amount) {
     .then((value) => print('Data Added Successfully'))
     .catchError((error) => print('Failed to add data: $error'));
 }
+
+

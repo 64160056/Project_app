@@ -1,12 +1,15 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:water_tracking_app/app/modules/home/controllers/water_controller.dart';
-
+import 'package:water_tracking_app/app/modules/home/views/Noti_view.dart';
 import 'dart:math' as math;
 
 import 'package:water_tracking_app/app/modules/home/views/add_weter.dart';
 import 'package:water_tracking_app/app/modules/home/views/component/Tapbar.dart';
-
+import 'package:water_tracking_app/app/modules/home/views/history_view.dart';
+import 'package:water_tracking_app/app/modules/home/views/info_view.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class WaterTrack extends StatefulWidget {
   static const String nameRoute = '/water_track';
@@ -17,7 +20,8 @@ class WaterTrack extends StatefulWidget {
 
 class _WaterTrackState extends State<WaterTrack>
     with SingleTickerProviderStateMixin {
-  final double maxWaterLevel = 2500.0; // กำหนดระดับน้ำสูงสุด
+  final RxInt waterAmount = 0.obs;
+  final double maxWaterLevel = 2500.0;
   late AnimationController _controller;
   final WaterController waterController = Get.put(WaterController());
 
@@ -26,15 +30,37 @@ class _WaterTrackState extends State<WaterTrack>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 2),
-    )..repeat(); // ทำให้การเคลื่อนไหวเกิดขึ้นซ้ำ
+      duration: Duration(seconds: 2),
+    )..repeat(); // Repeat the animation to simulate the water flow
   }
 
   @override
   void dispose() {
-    _controller.dispose(); // ปล่อย controller เพื่อลดการใช้หน่วยความจำ
+    _controller
+        .dispose(); // Ensure the controller is disposed to prevent memory leaks
     super.dispose();
   }
+  void updateWaterIntake(int addedAmount) {
+  final userId = FirebaseAuth.instance.currentUser?.uid; // Get the logged-in user's ID
+  if (userId != null) {
+    FirebaseFirestore.instance
+      .collection('users')
+      .doc(userId)
+      .set({
+        'amount': waterAmount,
+        'totalWater': waterAmount.value, // Update total water intake
+        'lastIntake': Timestamp.now(),
+        'waterIntake': FieldValue.increment(addedAmount),  // Increment by the added amount
+      }, SetOptions(merge: true))
+      .then((_) {
+        print("Water intake added/updated successfully!");
+      }).catchError((error) {
+        print("Error updating water intake: $error");
+      });
+  } else {
+    print("No user is logged in.");
+  }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +69,8 @@ class _WaterTrackState extends State<WaterTrack>
         title: Center(
             child: Text(
           'เป้าหมายการดื่มน้ำของคุณ',
-          style: TextStyle(fontSize: 25, color: Color.fromARGB(255, 0, 94, 188)),
+          style:
+              TextStyle(fontSize: 25, color: Color.fromARGB(255, 0, 94, 188)),
         )),
       ),
       body: Center(
@@ -74,8 +101,8 @@ class _WaterTrackState extends State<WaterTrack>
                       borderRadius: BorderRadius.circular(100), // ทำให้เป็นวงรี
                       child: ClipPath(
                         clipper: WaterClipper(
-                          progress: waterController.waterAmount.value / maxWaterLevel,
-                        ),
+                            progress: waterController.waterAmount.value /
+                                maxWaterLevel),
                         child: AnimatedBuilder(
                           animation: _controller,
                           builder: (context, child) {
@@ -92,7 +119,10 @@ class _WaterTrackState extends State<WaterTrack>
                       ),
                     ),
                     Positioned(
-                      top: 420 - (400 * (waterController.waterAmount.value / maxWaterLevel)),
+                      top: 420 -
+                          (400 *
+                              (waterController.waterAmount.value /
+                                  maxWaterLevel)),
                       child: Text(
                         '${(waterController.waterAmount.value / maxWaterLevel * 100).toInt()}%',
                         style: TextStyle(
@@ -112,7 +142,7 @@ class _WaterTrackState extends State<WaterTrack>
                 children: [
                   ElevatedButton(
                     onPressed: () {
-                      // Handle เป้าหมายใหม่ (ตั้งค่าหรือรีเซ็ตเป้าหมาย)
+                      // Handle button click
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color.fromARGB(255, 236, 255, 165),
@@ -131,10 +161,11 @@ class _WaterTrackState extends State<WaterTrack>
                   ),
                   FloatingActionButton(
                     onPressed: () async {
-                      // เปิดหน้าต่างเพิ่มน้ำ
+                      // Update water amount
                       final int? addedAmount = await Get.to(() => AddWeter());
                       if (addedAmount != null) {
-                        waterController.addWater(addedAmount); // เพิ่มน้ำที่ดื่ม
+                        waterController.addWater(addedAmount);
+                        updateWaterIntake(addedAmount); // Call Firestore update
                       }
                     },
                     backgroundColor: const Color.fromARGB(255, 149, 219, 173),
@@ -159,7 +190,6 @@ class _WaterTrackState extends State<WaterTrack>
 
 class WaterPainter extends CustomPainter {
   final double animationValue;
-
   WaterPainter(this.animationValue);
 
   @override
@@ -172,7 +202,8 @@ class WaterPainter extends CustomPainter {
 
     for (double x = 0; x <= size.width; x++) {
       final double y = waveHeight *
-          math.sin((x / size.width * waveFrequency) + animationValue * 2 * math.pi);
+          math.sin(
+              (x / size.width * waveFrequency) + animationValue * 2 * math.pi);
       if (x == 0) {
         path.moveTo(x, size.height / 2 + y);
       } else {
@@ -195,7 +226,6 @@ class WaterPainter extends CustomPainter {
 
 class WaterClipper extends CustomClipper<Path> {
   final double progress;
-
   WaterClipper({required this.progress});
 
   @override

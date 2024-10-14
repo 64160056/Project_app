@@ -1,44 +1,71 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart'; // Import Firestore
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:water_tracking_app/app/modules/home/views/add_weight.dart';
 import 'package:water_tracking_app/app/modules/home/views/water_track.dart';
-import 'register_view.dart'; // Import RegisterView here
+import 'register_view.dart';
 
 class LoginView extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final RxBool _isLoading = false.obs; // Loading state
 
   Future<void> signIn(String email, String password) async {
-    try {
-      UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
+  _isLoading.value = true; // Start loading
 
-      // ตรวจสอบว่าผู้ใช้มีข้อมูลใน Firestore หรือไม่
-      DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('users').doc(userCredential.user?.uid).get();
+  try {
+    // Attempt to sign in the user
+    UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
 
-      if (userDoc.exists) {
-        // ถ้ามีข้อมูลให้ไปที่หน้า AddWeight
-        Get.off(() => WaterTrack());
-      } else {
-        // ถ้าไม่มีข้อมูลให้ไปที่หน้า NewUserPage (สร้างหน้าสำหรับผู้ใช้ใหม่)
-        Get.off(() => AddWeight()); // สร้างหน้าใหม่ที่คุณต้องการ
-      }
+    // Get the user document from Firestore
+    DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('users').doc(userCredential.user?.uid).get();
 
-      Get.snackbar('Success', 'Logged in successfully');
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        Get.snackbar('Error', 'No user found for that email.');
-      } else if (e.code == 'wrong-password') {
-        Get.snackbar('Error', 'Wrong password provided.');
-      } else {
-        Get.snackbar('Error', e.message ?? 'Login failed');
-      }
+    // Check if user document exists and navigate accordingly
+    if (userDoc.exists) {
+      // Navigate to the WaterTrack page if user data exists
+      Get.off(() => WaterTrack());
+    } else {
+      // Navigate to AddWeight page if user data does not exist
+      Get.off(() => AddWeight());
     }
+
+    // Show success message
+    Get.snackbar('Success', 'Logged in successfully');
+  } on FirebaseAuthException catch (e) {
+    // Handle specific Firebase authentication errors
+    String message = 'Login failed. Please try again.';
+    switch (e.code) {
+      case 'user-not-found':
+        message = 'No user found for that email.';
+        break;
+      case 'wrong-password':
+        message = 'Wrong password provided.';
+        break;
+      case 'invalid-email':
+        message = 'The email address is not valid.';
+        break;
+      case 'user-disabled':
+        message = 'The user account has been disabled.';
+        break;
+      default:
+        message = e.message ?? message; // Fallback to generic message
+        break;
+    }
+    // Show error message
+    Get.snackbar('Error', message);
+  } catch (e) {
+    // Handle any other errors
+    Get.snackbar('Error', 'An unexpected error occurred: ${e.toString()}');
+  } finally {
+    _isLoading.value = false; // Stop loading
   }
+}
+
+  
 
   @override
   Widget build(BuildContext context) {
@@ -47,16 +74,16 @@ class LoginView extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Container(
-            padding: const EdgeInsets.all(20), // Add padding inside the container
+            padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: Colors.white, // Background color
-              borderRadius: BorderRadius.circular(10), // Rounded corners
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
               boxShadow: [
                 BoxShadow(
                   color: Colors.grey.withOpacity(0.5),
                   spreadRadius: 5,
                   blurRadius: 7,
-                  offset: const Offset(0, 3), // Shadow position
+                  offset: const Offset(0, 3),
                 ),
               ],
             ),
@@ -65,12 +92,12 @@ class LoginView extends StatelessWidget {
               children: [
                 // Logo at the top
                 Image.asset(
-                  'assets/water2.png', // Replace with the actual image path
+                  'assets/water2.png',
                   height: 100,
                 ),
-                const SizedBox(height: 40), // Add space below the logo
+                const SizedBox(height: 40),
 
-                // Username input (Email)
+                // Email input
                 TextField(
                   controller: _emailController,
                   decoration: InputDecoration(
@@ -79,6 +106,7 @@ class LoginView extends StatelessWidget {
                     fillColor: Colors.grey[300],
                     border: InputBorder.none,
                   ),
+                  keyboardType: TextInputType.emailAddress,
                 ),
                 const SizedBox(height: 20),
 
@@ -95,12 +123,11 @@ class LoginView extends StatelessWidget {
                 ),
                 const SizedBox(height: 10),
 
-                // "สมัครสมาชิก" link
+                // Register link
                 Align(
                   alignment: Alignment.centerRight,
                   child: GestureDetector(
                     onTap: () {
-                      // Navigate to RegisterView using Get
                       Get.to(() => RegisterView());
                     },
                     child: const Text(
@@ -115,22 +142,27 @@ class LoginView extends StatelessWidget {
                 const SizedBox(height: 40),
 
                 // Login button
-                ElevatedButton(
-                  onPressed: () {
-                    // Handle login action
-                    String email = _emailController.text;
-                    String password = _passwordController.text;
-                    signIn(email, password);
+                Obx(() => ElevatedButton(
+                  onPressed: _isLoading.value ? null : () {
+                    String email = _emailController.text.trim();
+                    String password = _passwordController.text.trim();
+                    if (email.isNotEmpty && password.isNotEmpty) {
+                      signIn(email, password);
+                    } else {
+                      Get.snackbar('Error', 'Please fill in both fields.');
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-                    backgroundColor: Colors.lightBlue, // Blue background
+                    backgroundColor: Colors.lightBlue,
                   ),
-                  child: const Text(
-                    'Login',
-                    style: TextStyle(fontSize: 18, color: Colors.black),
-                  ),
-                ),
+                  child: _isLoading.value
+                      ? CircularProgressIndicator(color: Colors.white) // Loading indicator
+                      : const Text(
+                          'Login',
+                          style: TextStyle(fontSize: 18, color: Colors.black),
+                        ),
+                )),
               ],
             ),
           ),

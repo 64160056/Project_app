@@ -85,7 +85,8 @@ class _WaterVolumeScreenState extends State<WaterVolumeScreen> {
                               color: Colors.grey.withOpacity(0.5), // สีของเงา
                               spreadRadius: 2, // ระยะกระจายของเงา
                               blurRadius: 5, // ระยะเบลอของเงา
-                              offset: const Offset(0, 3), // การเลื่อนของเงา (x, y)
+                              offset:
+                                  const Offset(0, 3), // การเลื่อนของเงา (x, y)
                             ),
                           ],
                         ),
@@ -181,23 +182,28 @@ void showCustomAmountDialog(BuildContext context) {
                     const Text(
                       'ml.',
                       style: TextStyle(
-                          fontSize: 16,
-                          color: Color.fromARGB(255, 0, 0, 0)),
+                          fontSize: 16, color: Color.fromARGB(255, 0, 0, 0)),
                     ),
                   ],
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
-                    final amount = int.tryParse(controller.text) ?? 0; // แปลงข้อความเป็นจำนวน
-                    Navigator.of(context).pop(amount); // ส่งค่ากลับ
-                     Get.back(
-                          result: amount);
+                    final amount = int.tryParse(controller.text);
+                    if (amount == null || amount <= 0) {
+                      Get.snackbar('Error',
+                          'Please enter a valid amount greater than zero.',
+                          snackPosition: SnackPosition.BOTTOM);
+                      return; // Exit if invalid
+                    }
+                    Navigator.of(context).pop(amount); // Send value back
+                    Get.back(result: amount);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color.fromARGB(255, 136, 195, 130),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius:
+                          BorderRadius.circular(10), // rest of the code...
                     ),
                     minimumSize: const Size(150, 50),
                   ),
@@ -217,4 +223,3 @@ void showCustomAmountDialog(BuildContext context) {
     },
   );
 }
-
