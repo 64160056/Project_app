@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
 import 'package:water_tracking_app/app/modules/home/views/Noti_view.dart';
 import 'package:water_tracking_app/app/modules/home/views/add_weight.dart';

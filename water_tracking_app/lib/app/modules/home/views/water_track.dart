@@ -121,9 +121,9 @@ class _WaterTrackState extends State<WaterTrack>
       appBar: AppBar(
         title: Center(
           child: Text(
-            'เป้าหมายการดื่มน้ำของคุณ',
+            'Water Tracker ',
             style:
-                TextStyle(fontSize: 25, color: Color.fromARGB(255, 0, 94, 188)),
+                TextStyle(fontSize: 30, color: Color.fromARGB(255, 0, 94, 188)),
           ),
         ),
       ),
@@ -222,7 +222,7 @@ class _WaterTrackState extends State<WaterTrack>
                       minimumSize: Size(150, 60),
                     ),
                     child: Text(
-                      'เป้าหมายใหม่',
+                      'Add New Goal',
                       style: TextStyle(
                           color: Colors.black,
                           fontSize: 24,
