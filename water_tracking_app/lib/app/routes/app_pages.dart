@@ -4,7 +4,7 @@ import 'package:water_tracking_app/app/modules/home/views/DrinkWater.dart';
 import 'package:water_tracking_app/app/modules/home/views/Noti_view.dart';
 import 'package:water_tracking_app/app/modules/home/views/add_weight.dart';
 import 'package:water_tracking_app/app/modules/home/views/add_weter.dart';
-import 'package:water_tracking_app/app/modules/home/views/editprofile_view%20copy.dart';
+import 'package:water_tracking_app/app/modules/home/views/editprofile_view.dart';
 import 'package:water_tracking_app/app/modules/home/views/history_view.dart';
 import 'package:water_tracking_app/app/modules/home/views/info_view.dart';
 import 'package:water_tracking_app/app/modules/home/views/login_view.dart';
@@ -76,7 +76,7 @@ class AppPages {
     ),
           GetPage(
       name: _Paths.EDITPROFILE,
-      page: () =>  EditprofileView(),
+      page: () =>  EditProfileView(),
       binding: HomeBinding(),
     ),
   ];
