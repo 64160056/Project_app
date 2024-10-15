@@ -6,6 +6,7 @@ import 'package:water_tracking_app/app/modules/home/views/login_view.dart';
 
 class RegisterView extends StatelessWidget {
   final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
@@ -14,7 +15,7 @@ class RegisterView extends StatelessWidget {
   RegisterView({super.key});
 
   // Method for registering user with Firebase and storing user data in Firestore
-  Future<void> registerUser(String email, String password) async {
+  Future<void> registerUser(String username, String email, String password) async {
     try {
       _isLoading.value = true; // Start loading
 
@@ -30,6 +31,7 @@ class RegisterView extends StatelessWidget {
           .collection('users')
           .doc(userCredential.user?.uid)
           .set({
+        'username': username, // Store the username
         'email': email,
         'weight': null, // Initialize weight to null
         'waterIntake': 0, // Initialize water intake to 0
@@ -85,9 +87,21 @@ class RegisterView extends StatelessWidget {
                 ),
                 const SizedBox(height: 40),
 
-                // Username input (Email)
+                // Username input
                 TextField(
                   controller: _usernameController,
+                  decoration: InputDecoration(
+                    labelText: 'Username',
+                    filled: true,
+                    fillColor: Colors.grey[300],
+                    border: InputBorder.none,
+                  ),
+                ),
+                const SizedBox(height: 20),
+
+                // Email input
+                TextField(
+                  controller: _emailController,
                   decoration: InputDecoration(
                     labelText: 'Email',
                     filled: true,
@@ -128,14 +142,15 @@ class RegisterView extends StatelessWidget {
                       onPressed: _isLoading.value
                           ? null
                           : () {
-                              String email = _usernameController.text;
+                              String username = _usernameController.text;
+                              String email = _emailController.text;
                               String password = _passwordController.text;
                               String confirmPassword =
                                   _confirmPasswordController.text;
 
                               if (password == confirmPassword) {
                                 registerUser(
-                                    email, password); // Call register method
+                                    username, email, password); // Call register method
                               } else {
                                 Get.snackbar(
                                     'Error', 'Passwords do not match.');

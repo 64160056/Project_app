@@ -1,14 +1,15 @@
+import 'package:confetti/confetti.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:water_tracking_app/app/modules/home/controllers/water_controller.dart';
-import 'package:water_tracking_app/app/modules/home/views/Noti_view.dart';
+import 'package:water_tracking_app/app/modules/home/views/DrinkWater.dart';
+import 'package:shared_preferences/shared_preferences.dart'; // ใช้สำหรับบันทึกข้อมูลในเครื่อง
 import 'dart:math' as math;
 
 import 'package:water_tracking_app/app/modules/home/views/add_weter.dart';
 import 'package:water_tracking_app/app/modules/home/views/component/Tapbar.dart';
-import 'package:water_tracking_app/app/modules/home/views/history_view.dart';
-import 'package:water_tracking_app/app/modules/home/views/info_view.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class WaterTrack extends StatefulWidget {
@@ -23,7 +24,9 @@ class _WaterTrackState extends State<WaterTrack>
   final RxInt waterAmount = 0.obs;
   double waterGoal = 2500.0; // Initialize with a default goal
   late AnimationController _controller;
+  late ConfettiController _confettiController; // คอนโทรลเลอร์สำหรับเฉลิมฉลอง
   final WaterController waterController = Get.put(WaterController());
+  DateTime lastUpdatedDate = DateTime.now(); // เก็บวันที่ล่าสุด
 
   @override
   void initState() {
@@ -31,15 +34,47 @@ class _WaterTrackState extends State<WaterTrack>
     _controller = AnimationController(
       vsync: this,
       duration: Duration(seconds: 2),
-    )..repeat(); // Repeat the animation to simulate the water flow
+    )..repeat();
 
-    _fetchWaterGoal(); // Fetch the water goal when the widget initializes
+    _confettiController = ConfettiController(
+        duration: const Duration(seconds: 2)); // คอนโทรลเลอร์แอนิเมชัน
+    _fetchWaterGoal();
+    _checkAndResetForNewDay(); // เช็คว่าเป็นวันใหม่หรือยังเมื่อเปิดแอป
   }
 
   @override
   void dispose() {
-    _controller.dispose(); // Ensure the controller is disposed to prevent memory leaks
+    _controller
+        .dispose(); // Ensure the controller is disposed to prevent memory leaks
     super.dispose();
+  }
+
+  // ฟังก์ชันเช็ควันใหม่และรีเซต
+  Future<void> _checkAndResetForNewDay() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? lastDateString = prefs.getString('lastUpdatedDate');
+
+    if (lastDateString != null) {
+      lastUpdatedDate = DateTime.parse(lastDateString);
+    }
+
+    DateTime currentDate = DateTime.now();
+
+    // ถ้าวันปัจจุบันไม่ตรงกับวันที่ล่าสุด ให้รีเซตน้ำ
+    if (currentDate.day != lastUpdatedDate.day ||
+        currentDate.month != lastUpdatedDate.month ||
+        currentDate.year != lastUpdatedDate.year) {
+      setState(() {
+        waterController.waterAmount.value = 0; // รีเซตปริมาณน้ำ
+      });
+      // บันทึกวันที่ใหม่
+      prefs.setString('lastUpdatedDate', currentDate.toIso8601String());
+    }
+  }
+
+  // ฟังก์ชันเฉลิมฉลองและรีเซต
+  void _celebrateAndReset() {
+    _confettiController.play(); // เริ่มแอนิเมชันเฉลิมฉลอง
   }
 
   // Fetch water goal from Firestore
@@ -50,25 +85,27 @@ class _WaterTrackState extends State<WaterTrack>
     final doc = await user.get();
     if (doc.exists && doc.data() != null) {
       setState(() {
-        waterGoal = doc.data()!['waterGoal'] ?? 2500.0; // Use the fetched goal or default
+        waterGoal = doc.data()!['waterGoal'] ??
+            5000.0; // Use the fetched goal or default
       });
     }
   }
 
   // Update water intake in Firestore
   void updateWaterIntake(int addedAmount) {
-    final userId = FirebaseAuth.instance.currentUser?.uid; // Get the logged-in user's ID
+    final userId =
+        FirebaseAuth.instance.currentUser?.uid; // Get the logged-in user's ID
     if (userId != null) {
-      FirebaseFirestore.instance
-          .collection('users')
-          .doc(userId)
-          .set({
-            'amount': waterAmount, // Store current amount
-            'totalWater': waterAmount.value , // Update total water intake
-            'lastIntake': Timestamp.now(),
-            'waterIntake': FieldValue.increment(addedAmount), // Increment by the added amount
-          }, SetOptions(merge: true))
-          .then((_) {
+      if (waterController.waterAmount.value + addedAmount > waterGoal) {
+        addedAmount = (waterGoal - waterController.waterAmount.value).toInt();
+      }
+      FirebaseFirestore.instance.collection('users').doc(userId).set({
+        'amount': waterAmount, // Store current amount
+        'totalWater': waterAmount.value, // Update total water intake
+        'lastIntake': Timestamp.now(),
+        'waterIntake':
+            FieldValue.increment(addedAmount), // Increment by the added amount
+      }, SetOptions(merge: true)).then((_) {
         print("Water intake added/updated successfully!");
       }).catchError((error) {
         print("Error updating water intake: $error");
@@ -85,7 +122,8 @@ class _WaterTrackState extends State<WaterTrack>
         title: Center(
           child: Text(
             'เป้าหมายการดื่มน้ำของคุณ',
-            style: TextStyle(fontSize: 25, color: Color.fromARGB(255, 0, 94, 188)),
+            style:
+                TextStyle(fontSize: 25, color: Color.fromARGB(255, 0, 94, 188)),
           ),
         ),
       ),
@@ -102,52 +140,71 @@ class _WaterTrackState extends State<WaterTrack>
               ),
             ),
             SizedBox(height: 20),
-            Obx(() => Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Container(
-                      width: 200,
-                      height: 400,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(100),
-                        border: Border.all(color: Colors.blue, width: 5),
-                      ),
-                    ),
-                    ClipRRect(
+            Obx(() {
+              // เงื่อนไขตรวจสอบถ้าถึง 100% จะเริ่มเฉลิมฉลอง
+              if (waterController.waterAmount.value >= waterGoal) {
+                _celebrateAndReset();
+              }
+              return Stack(
+                alignment: Alignment.center,
+                children: [
+                  Container(
+                    width: 200,
+                    height: 400,
+                    decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(100),
-                      child: ClipPath(
-                        clipper: WaterClipper(
-                            progress: waterController.waterAmount.value /
-                                waterGoal), // Use the dynamic water goal
-                        child: AnimatedBuilder(
-                          animation: _controller,
-                          builder: (context, child) {
-                            return CustomPaint(
-                              painter: WaterPainter(_controller.value),
-                              child: Container(
-                                width: 200,
-                                height: 400,
-                                color: Colors.blueAccent,
-                              ),
-                            );
-                          },
-                        ),
+                      border: Border.all(color: Colors.blue, width: 5),
+                    ),
+                  ),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(100),
+                    child: ClipPath(
+                      clipper: WaterClipper(
+                          progress:
+                              waterController.waterAmount.value / waterGoal),
+                      child: AnimatedBuilder(
+                        animation: _controller,
+                        builder: (context, child) {
+                          return CustomPaint(
+                            painter: WaterPainter(_controller.value),
+                            child: Container(
+                              width: 200,
+                              height: 400,
+                              color: Colors.blueAccent,
+                            ),
+                          );
+                        },
                       ),
                     ),
-                    Positioned(
-                      top: 420 - (400 * (waterController.waterAmount.value / waterGoal)), // Dynamic top position based on goal
-                      child: Text(
-                        '${(waterController.waterAmount.value / waterGoal * 100).toInt()}%', // Show the percentage relative to the dynamic water goal
-                        style: TextStyle(
-                          fontSize: 40,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
+                  ),
+                  Align(
+                    alignment: Alignment.center, // จัดให้ตำแหน่งตรงกลาง
+                    child: Text(
+                      '${(waterController.waterAmount.value / waterGoal * 100).toInt()}%', // แสดงเปอร์เซ็นต์การดื่มน้ำ
+                      style: TextStyle(
+                        fontSize: 40,
+                        fontWeight: FontWeight.bold,
+                        color: const Color.fromARGB(255, 197, 197, 197),
                       ),
                     ),
-                  ],
-                )),
+                  ),
+                ],
+              );
+            }),
             SizedBox(height: 30),
+            // Confetti Widget สำหรับแสดงแอนิเมชันเฉลิมฉลอง
+            ConfettiWidget(
+              confettiController: _confettiController,
+              blastDirectionality: BlastDirectionality.explosive,
+              shouldLoop: false, // ไม่ทำงานซ้ำ
+              colors: const [
+                Colors.blue,
+                Colors.green,
+                Colors.pink,
+                Colors.orange,
+                Colors.purple
+              ], // กำหนดสีของแอนิเมชัน
+            ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 25.0),
               child: Row(
@@ -155,7 +212,7 @@ class _WaterTrackState extends State<WaterTrack>
                 children: [
                   ElevatedButton(
                     onPressed: () {
-                      // Handle button click
+                      Get.off(DrinkWater());
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color.fromARGB(255, 236, 255, 165),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:water_tracking_app/app/modules/home/views/water_track.dart';
+import 'package:get/get.dart';
 class DrinkWater extends StatefulWidget {
   @override
   _DrinkWaterState createState() => _DrinkWaterState();
@@ -9,7 +10,7 @@ class DrinkWater extends StatefulWidget {
 
 class _DrinkWaterState extends State<DrinkWater> {
   final TextEditingController _controller = TextEditingController();
-  double _target = 0;  // ค่าเริ่มต้น
+  double _target = 0; // Default value
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +46,7 @@ class _DrinkWaterState extends State<DrinkWater> {
                   ),
                   onSubmitted: (value) {
                     setState(() {
-                      _target = double.tryParse(value) ?? 2500;  // ถ้ากรอกไม่ถูกต้อง จะกลับไปเป็นค่าเริ่มต้น
+                      _target = double.tryParse(value) ?? 2500; // Default if invalid input
                     });
                   },
                 ),
@@ -53,7 +54,7 @@ class _DrinkWaterState extends State<DrinkWater> {
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
-                  Get.to(WaterTrack());
+                  Get.to(WaterTrack()); // Navigate to WaterTrack
                   print('Target: $_target ml');
                 },
                 child: Text('Go!'),
