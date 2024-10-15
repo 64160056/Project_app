@@ -1,11 +1,13 @@
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply plugin: 'com.google.gms.google-services' // Add this line
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'com.google.gms.google-services' // ใช้ Google Services Plugin ที่นี่
+}
 
 android {
     namespace = "com.example.water_tracking_app"
-    compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    compileSdk = 33 // ใช้เวอร์ชันล่าสุด
+    ndkVersion = "23.1.7779620" // หรือใช้ค่า flutter.ndkVersion หากต้องการให้ Flutter จัดการ
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -18,15 +20,15 @@ android {
 
     defaultConfig {
         applicationId = "com.example.water_tracking_app"
-        minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
-        versionCode = flutter.versionCode
-        versionName = flutter.versionName
+        minSdk = 21 // แนะนำเป็น 21
+        targetSdk = 33 // แนะนำเป็น 33
+        versionCode 1 // ปรับเพิ่มตามเวอร์ชันที่ปล่อย
+        versionName "1.0.0" // ปรับตามเวอร์ชันที่ต้องการ
     }
 
     buildTypes {
         release {
-            signingConfig = signingConfigs.debug // TODO: Add your own signing config for the release build.
+            signingConfig = signingConfigs.debug // TODO: เพิ่มการเซ็นต์สำหรับการสร้างเวอร์ชัน Release
         }
     }
 }
@@ -34,12 +36,7 @@ android {
 dependencies {
     implementation platform('com.google.firebase:firebase-bom:33.3.0')
     implementation 'com.google.firebase:firebase-analytics'
-    // Add other Firebase dependencies as needed
-}
-
-// Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
-plugins {
-    id "dev.flutter.flutter-gradle-plugin"
+    // เพิ่ม Firebase dependencies อื่นๆ ตามที่ต้องการ
 }
 
 flutter {

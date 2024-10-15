@@ -22,7 +22,7 @@ Future<void> main() async {
   }
   runApp(
     GetMaterialApp(
-      title: "Application",
+      title: "Water Tracking App",
       initialRoute: AppPages.INITIAL,
       getPages: AppPages.routes,
     ),
