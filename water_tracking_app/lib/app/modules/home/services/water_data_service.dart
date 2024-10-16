@@ -3,13 +3,16 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class WaterDataService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   // ฟังก์ชันเพิ่มข้อมูลน้ำที่ดื่ม
   Future<void> addWaterIntake(int amount) async {
     try {
+      String? email = _auth.currentUser?.email; // ดึง email ของผู้ใช้ปัจจุบัน
       await _db.collection('waterIntake').add({
         'amount': amount,
         'timestamp': FieldValue.serverTimestamp(),
+        'email': email,  // บันทึก email ของผู้ใช้
       });
     } catch (e) {
       print('Error adding water intake: $e');
@@ -26,6 +29,7 @@ class WaterDataService {
         return {
           'amount': data['amount'] ?? 0,
           'timestamp': (data['timestamp'] as Timestamp).toDate(),
+          'email': data['email'],  // เพิ่ม email ลงในผลลัพธ์
         };
       }).toList();
     } catch (e) {
@@ -34,6 +38,7 @@ class WaterDataService {
     }
   }
 }
+
 Future<void> updateWaterIntake(String userId, int newIntake) async {
   final userId = FirebaseAuth.instance.currentUser!.uid;
   final DocumentReference userDoc = FirebaseFirestore.instance.collection('users').doc(userId);

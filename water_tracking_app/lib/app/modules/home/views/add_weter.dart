@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 import 'package:water_tracking_app/app/modules/home/views/water_track.dart';
+import 'package:water_tracking_app/app/stores/dataweter.dart';
 
 class AddWeter extends StatelessWidget {
   static const String nameRoute = '/add_weter';
@@ -188,33 +189,36 @@ void showCustomAmountDialog(BuildContext context) {
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: () {
-                    final amount = int.tryParse(controller.text);
-                    if (amount == null || amount <= 0) {
-                      Get.snackbar('Error',
-                          'Please enter a valid amount greater than zero.',
-                          snackPosition: SnackPosition.BOTTOM);
-                      return; // Exit if invalid
-                    }
-                    Navigator.of(context).pop(amount); // Send value back
-                    Get.back(result: amount);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(255, 136, 195, 130),
-                    shape: RoundedRectangleBorder(
-                      borderRadius:
-                          BorderRadius.circular(10), // rest of the code...
-                    ),
-                    minimumSize: const Size(150, 50),
-                  ),
-                  child: const Text(
-                    'Add',
-                    style: TextStyle(
-                      color: Color.fromARGB(255, 0, 0, 0),
-                      fontSize: 20,
-                    ),
-                  ),
-                ),
+  onPressed: () async {
+    final amount = int.tryParse(controller.text);
+    if (amount == null || amount <= 0) {
+      Get.snackbar('Error', 'Please enter a valid amount greater than zero.',
+          snackPosition: SnackPosition.BOTTOM);
+      return; // หยุดทำงานถ้าจำนวนที่ป้อนไม่ถูกต้อง
+    }
+
+    // เพิ่มข้อมูลน้ำลงใน Firestore พร้อมกับ userId
+    await addWaterData(amount);
+
+    Navigator.of(context).pop(amount); // ส่งค่ากลับไป
+    Get.back(result: amount);
+  },
+  style: ElevatedButton.styleFrom(
+    backgroundColor: const Color.fromARGB(255, 136, 195, 130),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(10),
+    ),
+    minimumSize: const Size(150, 50),
+  ),
+  child: const Text(
+    'Add',
+    style: TextStyle(
+      color: Color.fromARGB(255, 0, 0, 0),
+      fontSize: 20,
+    ),
+  ),
+),
+
               ],
             ),
           ),

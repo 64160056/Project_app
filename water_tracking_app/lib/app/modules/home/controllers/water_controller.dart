@@ -5,59 +5,56 @@ import 'package:water_tracking_app/app/modules/home/services/water_data_service.
 
 class WaterController extends GetxController {
   final WaterDataService waterDataService = WaterDataService();
-  var waterAmount = 0.obs;
-
+  final waterAmount = 0.obs;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final String userId =
-      FirebaseAuth.instance.currentUser!.uid; // Get the current user's UID
+  final String userId = FirebaseAuth.instance.currentUser!.uid; // รับ UID ของผู้ใช้ปัจจุบัน
   final double maxWaterLevel = 2500.0;
 
   @override
   void onInit() {
     super.onInit();
-    fetchWaterData(); // Fetch existing water data when initializing
+    fetchWaterData(); // ดึงข้อมูลน้ำที่ดื่มเมื่อเริ่มต้นใช้งาน
   }
 
   // ฟังก์ชันเพิ่มน้ำที่ดื่ม
   void addWater(int amount) async {
     try {
-      waterAmount.value =
-          (waterAmount.value + amount).clamp(0, maxWaterLevel.toInt());
-      await _storeWaterIntake(amount);
-      await waterDataService.addWaterIntake(amount); // บันทึกข้อมูลน้ำที่ดื่ม
+      waterAmount.value = (waterAmount.value + amount).clamp(0, maxWaterLevel.toInt());
+      await _storeWaterIntake(amount); // เก็บข้อมูลน้ำที่ดื่มใน Firestore
+      await waterDataService.addWaterIntake(amount); // บันทึกข้อมูลน้ำที่ดื่มผ่าน service
     } catch (e) {
       print("Error adding water intake: $e");
       // คุณสามารถเพิ่มการแสดงแจ้งเตือนหรือข้อความแสดงข้อผิดพลาดได้ที่นี่
     }
   }
 
-  // ฟังก์ชันดึงข้อมูลน้ำที่ดื่ม
+  // ฟังก์ชันดึงข้อมูลน้ำที่ดื่มจาก Firestore
   void fetchWaterData() async {
     try {
-      // Fetch water consumption data from Firestore
-      DocumentSnapshot userDoc =
-          await _firestore.collection('users').doc(userId).get();
+      DocumentSnapshot userDoc = await _firestore.collection('users').doc(userId).get();
       if (userDoc.exists) {
         var data = userDoc.data() as Map<String, dynamic>;
-        waterAmount.value =
-            data['totalWater'] ?? 0; // Assuming you store totalWater
+        waterAmount.value = data['totalWater'] ?? 0; // ถ้าหากมีข้อมูลน้ำที่ดื่มจะดึงมาแสดง
       }
     } catch (e) {
       print("Error fetching water data: $e");
-      // Handle fetch error (show alert or log)
+      // คุณสามารถเพิ่มการแสดงแจ้งเตือนหรือข้อความแสดงข้อผิดพลาดได้ที่นี่
     }
   }
 
+  // ฟังก์ชันเก็บข้อมูลการดื่มน้ำลงใน Firestore
   Future<void> _storeWaterIntake(int amount) async {
-    // Update water intake in Firestore
-    await _firestore.collection('users').doc(userId).update({
-      'amount': amount,
-      'totalWater': waterAmount.value, // Update total water intake
-      'lastIntake': Timestamp.now(),
-       // Optional: store last intake time
-    }).catchError((error) {
+    String? email = FirebaseAuth.instance.currentUser?.email; // ดึง email ของผู้ใช้
+
+    // ต้องแปลง waterAmount.value เป็น int ก่อนบันทึก
+    await _firestore.collection('users').doc(userId).set({
+      'amount': amount,                      // ปริมาณน้ำที่เพิ่มขึ้น
+      'totalWater': waterAmount.value,       // ปริมาณน้ำรวม (ต้องเป็น int)
+      'lastIntake': Timestamp.now(),         // เวลาของการดื่มน้ำครั้งล่าสุด
+      'email': email,                        // บันทึก email ของผู้ใช้ลงใน Firestore
+    }, SetOptions(merge: true))              // merge: true เพื่อไม่ให้ข้อมูลอื่นๆ ถูกเขียนทับ
+    .catchError((error) {
       print("Error updating water intake: $error");
-      // Handle the error (show alert or log)
     });
   }
 }

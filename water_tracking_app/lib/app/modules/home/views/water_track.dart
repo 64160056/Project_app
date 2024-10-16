@@ -1,5 +1,6 @@
 import 'package:confetti/confetti.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:water_tracking_app/app/modules/home/controllers/water_controller.dart';
@@ -92,28 +93,27 @@ class _WaterTrackState extends State<WaterTrack>
   }
 
   // Update water intake in Firestore
-  void updateWaterIntake(int addedAmount) {
-    final userId =
-        FirebaseAuth.instance.currentUser?.uid; // Get the logged-in user's ID
-    if (userId != null) {
-      if (waterController.waterAmount.value + addedAmount > waterGoal) {
-        addedAmount = (waterGoal - waterController.waterAmount.value).toInt();
-      }
-      FirebaseFirestore.instance.collection('users').doc(userId).set({
-        'amount': waterAmount, // Store current amount
-        'totalWater': waterAmount.value, // Update total water intake
-        'lastIntake': Timestamp.now(),
-        'waterIntake':
-            FieldValue.increment(addedAmount), // Increment by the added amount
-      }, SetOptions(merge: true)).then((_) {
-        print("Water intake added/updated successfully!");
-      }).catchError((error) {
-        print("Error updating water intake: $error");
-      });
-    } else {
-      print("No user is logged in.");
+void updateWaterIntake(int addedAmount) {
+  final userId = FirebaseAuth.instance.currentUser?.uid; // รับ uid ของผู้ใช้ที่ลงชื่อเข้าใช้
+  if (userId != null) {
+    if (waterController.waterAmount.value + addedAmount > waterGoal) {
+      addedAmount = (waterGoal - waterController.waterAmount.value).toInt();
     }
+
+    // อัปเดตหรือเพิ่มข้อมูลใน Firestore พร้อม userId, amount, timestamp
+    FirebaseFirestore.instance.collection('water_tracking').doc(userId).set({
+      'amount': waterController.waterAmount.value + addedAmount,  // อัปเดตปริมาณน้ำรวม
+      'timestamp': Timestamp.now(),  // เพิ่ม timestamp ของการบันทึก
+      'email': EmailLinkAuthController,  // เก็บ userId ของผู้ใช้ที่ลงชื่อเข้าใช้
+    }, SetOptions(merge: true)).then((_) {
+      print("Water intake added/updated successfully for user: $userId");
+    }).catchError((error) {
+      print("Error updating water intake: $error");
+    });
+  } else {
+    print("No user is logged in.");
   }
+}
 
   @override
   Widget build(BuildContext context) {
