@@ -1,22 +1,33 @@
 import 'package:flutter/material.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/src/extension_navigation.dart';
-import 'package:water_tracking_app/app/modules/home/views/water_track.dart';
 import 'package:get/get.dart';
-class DrinkWater extends StatefulWidget {
+import 'package:water_tracking_app/app/modules/home/views/water_track.dart';
+import 'package:cloud_firestore/cloud_firestore.dart'; // Firebase Firestore
+
+class WaterTrack extends StatefulWidget {
   @override
-  _DrinkWaterState createState() => _DrinkWaterState();
+  _WaterTrackState createState() => _WaterTrackState();
 }
 
-class _DrinkWaterState extends State<DrinkWater> {
-  final TextEditingController _controller = TextEditingController();
-  double _target = 0; // Default value
+class _WaterTrackState extends State<WaterTrack> {
+  double waterGoal = 0; // Default water goal
+
+  @override
+  void initState() {
+    super.initState();
+    // Retrieve the water goal passed as an argument and set the state
+    final double? goalFromDrinkWater = Get.arguments;
+    if (goalFromDrinkWater != null) {
+      setState(() {
+        waterGoal = goalFromDrinkWater; // Update the water goal
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Drink Water Goal'),
+        title: Text('Water Tracker'),
         backgroundColor: Colors.blue,
       ),
       body: Center(
@@ -26,7 +37,7 @@ class _DrinkWaterState extends State<DrinkWater> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                'Set your goals',
+                'Your Water Goal: $waterGoal ml',
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
@@ -34,30 +45,14 @@ class _DrinkWaterState extends State<DrinkWater> {
                 ),
               ),
               SizedBox(height: 20),
-              Container(
-                width: 150,
-                child: TextField(
-                  controller: _controller,
-                  keyboardType: TextInputType.number,
-                  textAlign: TextAlign.center,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    hintText: '$_target ml',
-                  ),
-                  onSubmitted: (value) {
-                    setState(() {
-                      _target = double.tryParse(value) ?? 2500; // Default if invalid input
-                    });
-                  },
-                ),
-              ),
-              SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
-                  Get.to(WaterTrack()); // Navigate to WaterTrack
-                  print('Target: $_target ml');
+                  // Simulate a goal change for example purposes
+                  setState(() {
+                    waterGoal += 500; // Increase goal by 500 ml
+                  });
                 },
-                child: Text('Go!'),
+                child: Text('Increase Goal'),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
                   foregroundColor: Colors.white,
