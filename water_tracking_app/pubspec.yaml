@@ -4,8 +4,16 @@ publish_to: 'none'
 version: 0.1.0
 
 environment:
+<<<<<<< HEAD
   sdk: ">=3.5.0 <4.0.0"
 
+=======
+<<<<<<< HEAD
+  sdk: ^3.5.1
+=======
+   sdk: ">=3.5.0 <4.0.0"
+>>>>>>> 8dcdf9a961d9846f9bb07261b1e8e5510b75d904
+>>>>>>> 6ad4f8d41daff66e3abbe521b8ffe5232754f8a6
 
 dependencies:
   flutter:
@@ -21,6 +29,7 @@ dependencies:
   fl_chart: ^0.69.0
   confetti: ^0.8.0
   shared_preferences: ^2.3.2
+  image_picker: ^0.8.6
 
 dev_dependencies:
   flutter_test:

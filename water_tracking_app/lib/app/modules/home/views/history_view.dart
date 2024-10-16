@@ -10,7 +10,7 @@ class HistoryView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Water Consumption History'),
+        title: Text('Water drinking history'),
         backgroundColor: Colors.lightBlue[100],
         centerTitle: true,
       ),
@@ -21,7 +21,7 @@ class HistoryView extends StatelessWidget {
           children: [
             // Section: Water consumption list
             Text(
-              'Water Consumption',
+              'Water drinking',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 10),

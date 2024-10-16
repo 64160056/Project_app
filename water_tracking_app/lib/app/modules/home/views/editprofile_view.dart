@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:water_tracking_app/app/modules/home/controllers/profile.dart';
 import 'package:water_tracking_app/app/modules/home/views/profile_view.dart';
 
 class EditProfileView extends StatefulWidget {
@@ -39,21 +38,14 @@ class _EditProfileViewState extends State<EditProfileView> {
 
         setState(() {
           if (userData.exists) {
-            // Safely access the data and provide fallback values for missing fields
             var data = userData.data() as Map<String, dynamic>?;
-            _nameController.text =
-                data?['username'] ?? 'No Name'; // Fallback if 'name' is missing
-            _profilePictureUrl = data?['profilePictureUrl'] ??
-                'assets/profile.png'; // Fallback if 'profilePictureUrl' is missing
+            _nameController.text = data?['username'] ?? 'No Name';
+            _profilePictureUrl = data?['profilePictureUrl'] ?? 'assets/profile.png';
           } else {
-            // Handle case where document does not exist
             _nameController.text = 'No Name';
-            _profilePictureUrl =
-                'assets/profile.png'; // Default profile picture
           }
-          _emailController.text =
-              _user!.email ?? ''; // Always get email from Firebase Auth
-          _isLoading = false; // Stop the loading indicator
+          _emailController.text = _user!.email ?? '';
+          _isLoading = false;
         });
       }
     } catch (e) {
@@ -61,6 +53,59 @@ class _EditProfileViewState extends State<EditProfileView> {
       setState(() {
         _isLoading = false;
       });
+    }
+  }
+
+  Future<bool> _saveProfile() async {
+    String name = _nameController.text.trim();
+    String email = _emailController.text.trim();
+    String password = _passwordController.text.trim();
+
+    try {
+      if (_user != null) {
+        // Update the user's name in Firestore
+        await _firestore.collection('users').doc(_user!.uid).update({
+          'username': name,
+        });
+
+        // Check if email has changed
+        if (email.isNotEmpty && email != _user!.email) {
+          await _user!.verifyBeforeUpdateEmail(email);
+          Get.snackbar('Email Update', 'Check your inbox to verify your new email.');
+          return false; // Email update initiated, don't navigate yet
+        }
+
+        // Update password if provided
+        if (password.isNotEmpty) {
+          await _reauthenticateAndChangePassword(password);
+        }
+
+        Get.snackbar('Success', 'Profile updated successfully!');
+        return true;
+      }
+    } catch (e) {
+      print('Error updating profile: $e');
+      Get.snackbar('Error', 'Failed to update profile: ${e.toString()}');
+    }
+    return false;
+  }
+
+  Future<void> _reauthenticateAndChangePassword(String newPassword) async {
+    // Reauthenticate the user with their current credentials
+    AuthCredential credential = EmailAuthProvider.credential(
+      email: _user!.email!,
+      password: _passwordController.text, // Prompt or store the old password for reauth
+    );
+    
+    try {
+      UserCredential userCredential = await _user!.reauthenticateWithCredential(credential);
+
+      // Now update the password
+      await userCredential.user!.updatePassword(newPassword);
+      Get.snackbar('Success', 'Password updated successfully.');
+    } catch (e) {
+      print('Error updating password: $e');
+      Get.snackbar('Error', 'Failed to update password: ${e.toString()}');
     }
   }
 
@@ -94,8 +139,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                         },
                         child: const Text(
                           'Change Profile Picture',
-                          style:
-                              TextStyle(color: Colors.blueAccent, fontSize: 16),
+                          style: TextStyle(color: Colors.black, fontSize: 16),
                         ),
                       ),
                     ),
@@ -126,8 +170,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                       controller: _passwordController,
                       obscureText: !_isPasswordVisible,
                       decoration: InputDecoration(
-                        labelText:
-                            'New Password', // Indicate this is for a new password
+                        labelText: 'New Password',
                         border: const OutlineInputBorder(),
                         prefixIcon: const Icon(Icons.lock),
                         suffixIcon: IconButton(
@@ -144,16 +187,13 @@ class _EditProfileViewState extends State<EditProfileView> {
                         ),
                       ),
                     ),
-
                     const SizedBox(height: 40),
                     // Save Changes button
                     ElevatedButton(
                       onPressed: () async {
-                        bool isUpdated =
-                            await _saveProfile(); // Wait for the profile update to complete
+                        bool isUpdated = await _saveProfile();
                         if (isUpdated) {
-                          Get.to(() =>
-                              ProfileView()); // Navigate to Profile after the update
+                          Get.to(() => ProfileView());
                         }
                       },
                       style: ElevatedButton.styleFrom(
@@ -168,8 +208,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                         'Save Changes',
                         style: TextStyle(
                           fontSize: 18,
-                          color:
-                              Colors.black, // Change this to your desired color
+                          color: Colors.black,
                         ),
                       ),
                     ),
@@ -179,46 +218,4 @@ class _EditProfileViewState extends State<EditProfileView> {
             ),
     );
   }
-
-Future<bool> _saveProfile() async {
-  String name = _nameController.text.trim();
-  String email = _emailController.text.trim();
-  String password = _passwordController.text.trim();
-
-  try {
-    if (_user != null) {
-      // Update the user's name in Firestore
-      await _firestore.collection('users').doc(_user!.uid).update({
-        'username': name,
-      });
-
-      // Check if email has changed
-      if (email.isNotEmpty && email != _user!.email) {
-        await _user!.verifyBeforeUpdateEmail(email);
-        return false; // Email update initiated, don't navigate yet
-      }
-
-      // Update password if provided
-      if (password.isNotEmpty) {
-        // Reauthenticate the user
-        UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-          email: _user!.email!, // Current email
-          password: password, // Current password (get from user input or prompt)
-        );
-
-        // Now update the password
-        await userCredential.user!.updatePassword(password);
-      }
-
-      // Show success message
-      Get.snackbar('Success', 'Profile updated successfully!');
-      return true; // Return true to indicate success
-    }
-  } catch (e) {
-    print('Error updating profile: $e');
-    Get.snackbar('Error', 'Failed to update profile: ${e.toString()}');
-  }
-  return false; // Return false if any errors occurred
-}
-
 }
