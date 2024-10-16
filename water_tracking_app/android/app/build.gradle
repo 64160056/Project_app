@@ -36,6 +36,8 @@ android {
 dependencies {
     implementation platform('com.google.firebase:firebase-bom:33.3.0')
     implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-auth' // ถ้าคุณใช้ Authentication
+    implementation 'com.google.firebase:cloud-firestore' // ถ้าคุณใช้ Cloud Firestore
     // เพิ่ม Firebase dependencies อื่นๆ ตามที่ต้องการ
 }
 

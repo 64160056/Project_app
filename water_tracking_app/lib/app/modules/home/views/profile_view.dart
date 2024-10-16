@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart'; // Firebase Authentication
 import 'package:cloud_firestore/cloud_firestore.dart'; // Firestore for additional user data
 import 'package:water_tracking_app/app/modules/home/services/auth_service.dart';
+import 'package:water_tracking_app/app/modules/home/views/component/Tapbar.dart';
 import 'editprofile_view.dart'; // Import your EditProfileView
 // Make sure to import your UserService class
 
@@ -144,31 +145,7 @@ class _ProfileViewState extends State<ProfileView> {
                 ),
               ),
             ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        backgroundColor: Colors.lightBlue[50],
-        iconSize: 35,
-        selectedItemColor: Colors.blue,
-        unselectedItemColor: Colors.grey,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.water_drop),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.history),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.notifications),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: '',
-          ),
-        ],
-      ),
+     
     );
   }
 }
